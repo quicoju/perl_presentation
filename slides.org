@@ -1,0 +1,504 @@
+#+TITLE:     Quick Perl Intro
+#+AUTHOR:    Francisco Jurado
+#+EMAIL:     francisco.jurado@gmail.com
+#+DATE:      2017-06-08 Thu
+#+DESCRIPTION: Quick introduction of the Perl programming language
+#+KEYWORDS: Perl, programming
+#+LANGUAGE:  en
+#+OPTIONS:   H:2 num:t toc:t \n:nil @:t ::t |:t ^:t -:t f:t *:t <:t
+#+OPTIONS:   TeX:t LaTeX:t skip:nil d:nil todo:t pri:nil tags:not-in-toc
+#+INFOJS_OPT: view:nil toc:nil ltoc:t mouse:underline buttons:0 path:http://orgmode.org/org-info.js
+#+EXPORT_SELECT_TAGS: export
+#+EXPORT_EXCLUDE_TAGS: noexport
+#+LINK_UP:   
+#+LINK_HOME:
+#+startup: beamer
+#+LaTeX_CLASS: beamer
+#+LaTeX_CLASS_OPTIONS: [bigger]
+#+BEAMER_FRAME_LEVEL: 2
+#+BEAMER_THEME: Rochester [height=20pt]
+#+COLUMNS: %40ITEM %10BEAMER_env(Env) %9BEAMER_envargs(Env Args) %4BEAMER_col(Col) %10BEAMER_extra(Extra)
+#+latex_header: \AtBeginSection[]{\begin{frame}<beamer>\frametitle{Topic}\tableofcontents[currentsection]\end{frame}}
+
+* Philosophy
+** Motivation
+#+ATTR_BEAMER: :overlay<-+>
+   - Pragmatic
+     + It will mold itself to do what you mean.
+     + Because only you know what you need.
+     + Won't enforce programming paradigm
+     + Perl is a language for getting your job done
+   - Motto
+     + "There's more that one way to do it" *TIMTOWTDI* (Tim Toady)
+     + "Easy things should be easy and hard things should be possible"
+   - Larry Wall designed syntax based on the following principles
+     + Things that are different, should look different
+     + Common constructions should be short
+     + Important information should come first
+** Baby Perl
+#+ATTR_BEAMER: :overlay<-+>
+  - Analogy when a person starts learning a new spoken language
+  - You start by learning a few words, then start building simple sentences
+  - Continue with simple conversations
+  - Don't need to know a whole language to express ideas and concepts
+  - Keep practicing and become a native speaker
+
+* First steps
+** perldoc
+#+ATTR_BEAMER: :overlay<-+>
+  - Documentation written in POD (sometimes embedded to source code)
+  - Command line tool to view Perl documentation (language, modules, etc)
+  - Example:
+#+name: perldoc_example
+#+begin_src sh :results output :exports both
+$ perldoc perl
+$ perldoc -l List::Util
+$ perldoc -m List::Util
+$ perldoc -f map
+$ perldoc -v '$/'
+#+end_src
+
+** Built-in Data Structures (sigils)
+   - Scalars variables use ($)
+   - Array variables use (@)
+   - Hash variables use (%)
+   - They allow to separate variables into different namespaces: $name, @name, %name
+** Context
+*** Amount Context (void, scalar, list)
+    - Governs how many items you expect from an operation 
+#+name: amount_context
+#+begin_src perl :results output :exports both
+   - build_sales_report()                          # void context
+   - my $earnings  = build_earnings_report()       # scalar context
+   - my @details   = build_earnings_report()       # list context
+   - my ($report)  = build_earnings_report()       # list context
+   - process_report( build_earnings_report() )     # list context
+   - save_amount( scalar build_earnings_report() ) # scalar context
+#+end_src
+
+*** Type Context (string, numeric, boolean)
+    - Defines who Perl interprets a piece of data
+    - In numeric context strings that don't look like numbers evaluate to 0
+    - *Watch out!!*
+#+begin_src perl :results output :exports both
+   my $name = 'Francisco'
+   say 'Really the same person?' if $name  == 'Frank';  # == imposes numeric context
+   say 'Really the same person?'  if $name eq 'Frank';  # eq imposes string context
+#+end_src
+
+** Perl pronouns
+*** The default scalar variable $_ (topic variable)
+#+ATTR_BEAMER: :overlay<-+>
+   - Most notable in its absence, many builtin operations work on this variable
+   - Equivalent to the pronoun /it/
+#+begin_src perl :results output :exports both
+    <$fh>       # read line from file handle in $fh and stores the line in $_
+    print(uc)   # prints the contents of $_ to stdout in upper case
+#+end_src
+   - Multiple built-ins operate on this variable: uc, say, print, lc, length, Perl Regex.
+   - Looping directives default to $_ as the iteration variable
+#+begin_src perl
+  say "#$_" for 1 .. 10;
+  while (<STDIN>)
+  {
+     chomp;
+     say scalar reverse;
+  }
+#+end_src
+
+*** The default Array variable @_, @ARGV
+#+ATTR_BEAMER: :overlay<-+>
+    - @_ is equivalent to the pronoun /they/ and /them/.
+    - @ARGV contains the command line arguments to the program.
+    - shift and pop operate on these to variable by default.
+    - When operating on an empty filehandle, each element of @ARGV
+      will be treated as a file name to open for reading.
+
+* The community
+** CPAN The Comprehensive Perl Archive Network 
+#+ATTR_BEAMER: :overlay<-+>
+    - http://www.cpan.org
+    - http://www.metacpan.org
+    - Tens of thousands of reusable packages
+    - All kinds of problem solvers
+
+** Perl Sites
+#+ATTR_BEAMER: :overlay<-+>
+   - Perl's homepage http://www.perl.org
+   - Perl Monks http://perlmonks.org (25 years)
+   - Perl blogs http://blogs.perl.org
+   - Perl Weekly http://perlweekly.com
+   - Perl Buzz   http://perlbuzz.com
+** IRC and Events
+   - Yet Another Perl Conference http://yapc.org
+   - Server: irc://irc.perl.org
+   - Channels: #perl-help #perl-qa #perl (also in Freenode)
+
+
+
+* The Perl Language
+** Names
+#+ATTR_BEAMER: :overlay<-+>
+    - Used for naming everything: functions, variables, packages, etc.
+    - Valid names begin in `_' or a letter
+    - Followed by any combination of letters, numbers and underscores
+    - invalid names `invalid name', `3rdStrike', `~rare', `lisp-like-name'
+** Variables (sigils again)
+   - The sigil governs how to manipulate the data of a variable
+   - The ($) will access a single element of an array or hash: $hash{ $key }, $array[ $index ] as accessor or as lvalue
+** Namespaces
+    - Namespace is a collection of symbols grouped under a globally unique name
+    - Multi-level namespaces are allowed by joining names with (::) like in Modern::Perl
+    - Within the namespace the only symbol name can be used
+    - Outside the namespace use the fully qualified name
+    - The default namespace is main
+
+** Values
+*** Strings
+    - Piece of textual or binary data with no particular formatting, delimited by single or double quotes.
+    - For escaping use backslash (\).
+    - To use escaped sequence of meta-characters do it under double quotes "\t \n \b".
+    - Concatenate stings with the concatenation operator (.)
+    - use qq{} as an altenative to (") to prevent escaping repeatedly (\")
+    - use q{}  as an alternative to (') to prevent escaping repeatedly (\')
+    - Here docs are available
+#+begin_src perl
+   my $single_quoted_str = 'To be or not to be.';
+   my $double_quoted_str = "Interpolate a variable: $name.\n"
+
+   say $single_quoted_str . $double_quoted_str;
+
+   # see perlop for good examples
+   # ============================
+   my $here_doc_str =<<"END_STRING"
+   This is a list where variables can be interpolated for example
+   the variable \$number has a value of $number
+END_STRING
+#+end_src
+
+*** Numbers 
+    - Support integers and floating-point values, can be any popular notation
+#+begin_src perl
+  my $integer = 5;
+  my $float = 0.01;
+  my $sci_float = 1.02e10;
+  my $binary = 0b1101;
+  my $octal = 012;
+  my $hex = 0x12;
+#+end_src
+    - Support of "_" as number separator: 1_000_000_000
+    - Perl treats everything that looks like a number as a number in numeric context
+
+*** Undef
+    - Represents an unassigned, undefined and unknown value
+    - To set a variable to an undefined value: $var = undef;
+    - To test for a defined value: defined $var;
+
+*** Lists
+    - `()' Denote a list, in scalar context evaluates to undef
+    - `()' in list context it's an empty list and in lvalue imposes list context
+    - my $count = () = get_list_of_colors();
+    - The comma operator ',' creates a list, and it has very low precedence
+    - The range operator also creates lists '..'
+#+begin_src perl
+    my @numbers  = (1, 2, 3, 4, 5);
+    my @numbers2 =  1 .. 5;
+    my @farm   = qw!horse chicken goat pig cow!
+    my ($package, $filename, $line) = caller();
+#+end_src
+
+** Scalars
+#+ATTR_BEAMER: :overlay<->
+   - Fundamental data type: single, discrete value
+
+** Arrays
+#+ATTR_BEAMER: :overlay<->
+- Elements
+- Assignment
+- Slices
+- Context
+- Interpolation
+** Hashes
+#+ATTR_BEAMER: :overlay<->
+- Declarations
+- Indexing
+- Key existence
+- Accessing elements
+- Empty Hash
+- Idioms
+
+** Scope
+*** Lexical
+    - Lexical scope governed by the syntax of the program usually within ({ and }) or entire files.
+*** Our
+*** Dynamic
+*** State
+
+** Control Flow    
+*** if, unless and ternary conditional
+    - The condition is evaluated in boolean context
+#+begin_src perl
+   # prefix form
+   if ($true_val)  {
+       say "This is true";
+   }
+
+   unless ($true_val) {
+       say "This is false"; 
+   }
+
+   # postfix form
+   say "This is true" if ($true_val);
+   say "This is false" unless ($true_val);
+
+   # Ternary conditional operator
+   my $time_postfix = after_noot($time) ? 'PM' : 'AM';
+#+end_src
+*** for loops
+    - The for loop aliases the iterator variable to the values in the iteration
+#+begin_src perl
+    # Prefix notation
+    foreach(1 .. 10) {
+      say "$_ * $_ = ", $_ * $_;
+    }
+
+    # Postfix notation
+    say "$_ * $_ = ", $_ * $_ for 1 .. 10;
+
+    # named lexical iterator
+    foreach my $num (1 .. 10) {
+      say "$num * $num = ", $num * $num;
+    }
+
+    # C style
+    for (my $i = 0; $i <= 10; $i++) {
+       say "$i * $i = ", $i * $i;
+    }
+#+end_src
+
+*** While and Until
+#+begin_src perl
+   # shifting in the control block
+   while (@values) { 
+     say( shift @values );
+   }
+
+   # shift in the condition
+   while (my $value = shift @values) {
+     say $value;
+   }
+
+   until ($finished) {
+      $finished = finished_yet();
+   }
+
+   # iterate over an open filehandle
+   # this construct is equivalent to while (defined($_ = <$fh>)) {}
+   while (<$fh>) {
+       chomp and say;
+   }
+
+   # loop control
+   while (<$fh>) {
+     next if /\A#/;
+     last if /\A__END__/;
+   }
+
+   # named loops and continue
+   # SEE EXAMPLESo
+   LINE:
+   while (<$fh>) {
+       chomp;
+
+       PREFIX
+       for my $prefix (@prefixes) {
+           next LINE unless $prefix;
+       }
+   }
+   continue {
+     say "Force the execution of this block ....";
+   }
+#+end_src
+
+** Coercion Context
+*** Boolean Coercion
+*** String Coercion
+*** Numeric Coercion
+*** Reference Coercion
+*** Dualvars
+
+** Packages
+
+** References
+*** Scalar
+*** Array
+*** Hash
+*** Function
+*** Filehandle
+*** Reference Count
+
+** Operators
+*** Numeric
+*** String
+*** Logical
+*** Bitwise
+*** Other
+
+** Functions
+*** Declaration
+*** Invoking
+*** Parameters
+*** Anonymous functions
+
+** Closures
+
+
+* Regular Expressions
+** qr// Operator
+** Quantifiers
+** Modifiers
+** Named Captures
+** Numbered Captures
+
+* OO
+** Built-in OO
+*** Classes
+*** Methods
+*** Static Methods
+*** Inheritance
+**** DOES()
+**** AUTOLOAD()
+**** SUPER()
+*** bless
+
+** Moose
+*** Classes
+*** Methods
+*** Attributes
+*** Polymorphism
+*** Roles
+
+** Reflection
+
+* Misc
+** Idioms
+** Exceptions
+** Pragmas
+** Taint
+** One liners
+** Fun
+
+* Testing
+** Test::More
+** Test Anything Protocol
+** Running Tests
+** Organizing tests
+
+* Modules
+** Using and Importing
+** Exporting
+
+* Distributions
+** Attributes of a Distribution
+#+ATTR_BEAMER: :overlay<-+>
+  - The behavior of automated CPAN installers
+  - Metadata to describe what each distribution provides and expects
+  - Machine-readable documentation and licensing
+** CPAN Tools for managing distributions 
+#+ATTR_BEAMER: :overlay<-+>
+  - Default client: cpan
+#+begin_src sh :results output :exports both
+$ cpan
+cpan[1] > install Modern::Perl
+$ cpan Modern::Perl
+#+end_src
+  - Light and fast client: cpanm
+  - Provided by App::cpanminus
+#+begin_src sh :results output :exports both
+$ curl -LO http://xrl.us/cpanm
+$ cpanm Modern::Perl
+#+end_src
+
+
+* Good readings
+
+
+ This slide consists of some text with a number of bullet points:
+ #+ATTR_BEAMER: :overlay <+->
+ - the first, very *important*, point!
+ - the previous point shows the use of the special markup which
+   translates to the Beamer specific /alert/ command for highlighting
+   text.
+
+ The above list could be numbered or any other type of list and may
+ include sub-lists.
+
+** Control Flow
+
+** A more complex slide
+This slide illustrates the use of Beamer blocks.  The following text,
+with its own headline, is displayed in a block:
+*** Org mode increases productivity                               :B_theorem:
+    :PROPERTIES:
+    :BEAMER_env: theorem
+    :END:
+    - org mode means not having to remember LaTeX commands.
+    - it is based on ascii text which is inherently portable.
+    - Emacs!
+
+    \hfill \(\qed\)
+
+** Two columns
+*** A block						      :B_block:BMCOL:
+    :PROPERTIES:
+    :BEAMER_env: block
+    :BEAMER_col: 0.4
+    :END:
+    - this slide consists of two columns
+    - the first (left) column has no heading and consists of text
+    - the second (right) column has an image and is enclosed in an
+      *example* block
+
+*** A screenshot                                            :BMCOL:B_example:
+    :PROPERTIES:
+    :BEAMER_col: 0.6
+    :BEAMER_env: example
+    :END:
+    #+ATTR_LATEX: width=\textwidth
+    [[file:///home/quicoju/doc/notes/perl_presentation/a-simple-slide.png]]
+
+
+** Babel
+   :PROPERTIES:
+   :BEAMER_envargs: [t]
+   :END:
+*** Octave code						      :BMCOL:B_block:
+    :PROPERTIES:
+    :BEAMER_col: 0.45
+    :BEAMER_env: block
+    :END:
+#+name: octaveexample
+#+begin_src octave :results output :exports both
+A = [1 2 ; 3 4]
+b = [1; 1];
+x = A\b
+#+end_src
+
+*** The output						      :BMCOL:B_block:
+    :PROPERTIES:
+    :BEAMER_col: 0.4
+    :BEAMER_env: block
+    :BEAMER_envargs: <2->
+    :END:
+#+results: octaveexample
+#+begin_example
+A =
+
+   1   2
+   3   4
+
+x =
+
+  -1
+   1
+#+end_example
