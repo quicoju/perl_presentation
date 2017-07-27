@@ -209,31 +209,101 @@ END_STRING
 
 ** Scalars
 #+ATTR_BEAMER: :overlay<->
-   - Fundamental data type: single, discrete value
-
+   - Fundamental data type: single, discrete value. String, number, fh, etc.
+   - Identified by the ($) sigil
+   - Any value type can be [re]assigned arbitrarily
+   - Contains a numeric slot and a string slot
+   - Subject to string interpolation
 ** Arrays
 #+ATTR_BEAMER: :overlay<->
-- Elements
-- Assignment
-- Slices
-- Context
-- Interpolation
+   - Arrays are used to store a collection of scalars
+   - Access by index starting on 0
+   - Use the scalar sigil to access an individual element
+   - They grow or shrink as you manipulate them
+   - Use each to iterate over the array
+   - Slices an be used access multiple elements at the same time
+   - In list context, arrays flatten into lists
+   - Array interpolate into strings as the stringification of each element separated by /$"/
+#+begin_src perl
+   my @zero_to_nine = 0 .. 9;
+
+   # Single element access
+   $zero_to_nine[5];
+
+   # select the last element 
+   $zero_to_nine[ $#zero_to_nine ]
+   $zero_to_nine[ @zero_to_nine-1 ]
+   $zero_to_nine[-1]
+
+   # Arrays in different contexts
+
+   # scalar assignment
+   $count = @zero_to_nine; 
+   
+   #scalar string concatenation
+   say 'I got ' . @zero_to_nine . ' numbers'; 
+
+   #string interpolation
+   say "These are my @zero_to_nine numbers";
+
+  #boolean context
+  say 'I do have numbers.' if @zero_to_nine;
+
+  # Slice
+  my @selected_data = @data[ @indexes ];
+
+  # indexes in splices is evaluated in list context
+  @data[ @indexes ] = ($init_value) x @indexes;
+#+end_src
+*** Array Operations (destructive) (See examples)
+    - push: Add to the end 
+    - pop: Pull from the end
+    - unshift: Push to the front
+    - shift: Pull from the front
+    - splice: remove, replaces elements from an array
+#+begin_src perl
+  # Merge multiple arrays in one push
+  push my @pets, @dogs, @cats, @brids;
+#+end_src
 ** Hashes
 #+ATTR_BEAMER: :overlay<->
-- Declarations
-- Indexing
-- Key existence
-- Accessing elements
-- Empty Hash
-- Idioms
+   - Also known as tables, associative arrays, dictionaries, etc
+   - This structure has no order, don't rely on this.
+   - Declare with the (%) sigil
+   - Access a single element with ($) and "{}"
+   - Test key existence with *exists*
+   - Use *keys %hash* to extract a list containing the %key values
+   - Use *values %hash* to extract a list containing the %hash valeus
+   - Iterate over a hash with *each %hash*, it'll return a key/value pair and undef when done
+   - To reset the iterator use either *keys* or *values*
+   - Slices work just like in arrays but using braces *@hash{ @keys }*
+   - To initialize a hash: *my %initialized_hash = map { $_ => 1 } @keys*
+#+begin_src perl
+   # initialize a hash
+   my %music_genere_for = ( 'the beatles' => "rock", rush => "progressive" );
 
+   # access a single element
+   say $music_genere_for{'the beatles'};
+
+#+end_src
+*** Hash idioms
+#+begin_src perl
+   # To merge two hashes, use slices
+   # you can rely in the order returned by keys and values
+   @hash_1{ keys %hash_2 } = values %hash_2;
+
+   # extract uniq values in an array
+   my %uniq;
+
+   undef @uniq{ @items }
+   my @unique_items = keys %uniq;
+#+end_src
 ** Scope
 *** Lexical
     - Lexical scope governed by the syntax of the program usually within ({ and }) or entire files.
 *** Our
 *** Dynamic
 *** State
-
 ** Control Flow    
 *** if, unless and ternary conditional
     - The condition is evaluated in boolean context
@@ -321,18 +391,61 @@ END_STRING
 #+end_src
 
 ** Coercion Context
-*** Boolean Coercion
-*** String Coercion
-*** Numeric Coercion
-*** Reference Coercion
-*** Dualvars
-
+   - Boolean Coercion
+   - String Coercion
+   - Numeric Coercion
+   - Reference Coercion (Autovivification)
+   - Scalar::Util::dualvar to manipulate scalar variable coercion
 ** Packages
+   - Encapsulation of named entities in a single namespace
+   - *package* declares a  package and a namespace
+   - Everything declared within a *package* block refer to symbols in that package's table
+   - The scope of a package continues until the next *package* or until the end of the file
+   - The default package is *main*
+   - A package has a version and three implicit methods: *import*, *unimport*, *VERSION*
+   - Perl has /open namespaces/, you can add definitions at anytime
+#+begin_src perl
+   # new way to version packages
+   package Pinball:Wizard v123.45.6 { ... }
 
+   # old way
+   package Pinball::Wizard { our $VERSION = 123.45.6; ... } 
+#+end_src
 ** References
-*** Scalar
-*** Array
+   - I does what you expect for references
+   - Use the reference operator (\) on a variable to extract its reference
+   - References are scalar values
+   - To dereference a reference use the corresponding sigil for the referenced variable
+   - Another way to dereference use the arrow operator;
+#+begin_src perl
+    my $name = 'Larry';
+    my $name_ref = \$name;
+
+    # to modify the value from the reference
+    $$name_ref = 'Moe';
+#+end_src
+*** Array references
+    - To create a new unamed array reference use *[]*
+#+begin_src perl
+    my @names = qw(Larry Moe Curly);
+    my $names_ref = \@names;
+
+    # Access one element
+    $$names_ref[0]  = 'Moe';
+    $names_ref->[1] = 'Curly';
+
+    # Access the entire array
+    my $name_count = @$names_ref;
+
+    # or slice
+    my @last_two = @{ $names_ref }[-1, -2];
+
+    # create an un-named refernece 
+    my $pets_ref = [qw/cat dog bird/];
+#+end_src
 *** Hash
+    - To create a new unamed hash reference use *{}*
+
 *** Function
 *** Filehandle
 *** Reference Count
