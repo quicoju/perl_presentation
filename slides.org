@@ -443,26 +443,187 @@ END_STRING
     # create an un-named refernece 
     my $pets_ref = [qw/cat dog bird/];
 #+end_src
-*** Hash
+*** Hash references
     - To create a new unamed hash reference use *{}*
+#+begin_src perl
+    my %spanish_color_for = (
+        blue   => 'azul',
+        gold   => 'dorado',
+        red    => 'rojo',
+        yellow => 'amarillo',
+    );
 
-*** Function
-*** Filehandle
+    # Extract reference, keys and vlues
+    my $spanish_color_for_ref = \%spanish_color_for;
+    my @spanish_colors = values %{ $spanish_color_for_ref };
+    my @english_colors = keys   %{ $spanish_color_for_ref };
+
+    # Access a single element
+    my $cool_color = $spanish_color_for_ref->{'red'}
+    my $same_cool_color = ${ $spanish_color_for_ref }{'red'}
+
+    # slice
+    my @colores = @{ $spanish_color_for_ref }{qw/red blue green/}
+
+    # create an unnamed reference
+    my $spanish_colors_ref = {
+        blue   => 'azul',
+        gold   => 'dorado',
+        red    => 'rojo',
+        yellow => 'amarillo',
+    };   
+#+end_src
+
+*** Function references
+    - Functions in perl are data types
+    - To create an unamed function use *sub* without a name
+    - To extract the reference of an existing named function use the *\* followed by the function sigil *&*
+#+begin_src perl
+    # Extract the reference
+    sub bake_cake { say 'Baking a wonderful cake!' };
+    my $cake_sub_ref = \%bake_cake;
+
+    # Call the function from the reference
+    $cake_sub_ref->();
+    
+    # or ...But this is old don't use it
+    &$cake_sub_ref; 
+#+end_src
+*** Filehandle references
+    - The lexical filehandle form of *open* and *opendir* operate on filehandles references
+    - The references are object of *IO::File*
+
+#+begin_src perl
+    use autodie 'open';
+    open my $out_fh, '>', 'output_file.txt';
+
+    # write to the file handle
+    $out_fh->say( 'Have some text!' );
+
+    # ...or
+    say $out_fh 'Have some text!'; 
+#+end_src
 *** Reference Count
+    - Perl's memory management technique is reference count.
+      1. Keeps track of the number of places where a reference is being used
+      2. When the count drops to 0, perl knows that it's safe to claim the memory.
 
+*** Cool stuff about references
+    - Nested data structures
+    - For  more information about Perl data structures use *perldoc perldsc* 
+#+begin_src
+    my %band_members_in = (
+        'The Beatles' => {
+            'John Lennon'     => [ qw/guitar voice keyboards/ ],
+            'Paul McCartney'  => [ qw/bass voice guitar drums piano/ ],
+            'George Harrison' => [ qw/guitar voice bass/ ],
+            'Ringo Starr'     => [ qw/drums voice tambourine/ ],
+        },
+        'Minutemen' => {
+            'D. Boon'         => [ qw/guitar voice/ ],
+            'Mike Watt'       => [ qw/bass voice/ ],
+            'George Hurley'   => [ qw/drums/ ],
+        },
+        'Cafe Tacuba' => {
+            'Ruben Albarran'    => [ qw/voice/ ],
+            'Emmanuel del Real' => [ qw/keyboards voice/ ],
+            'Joselo Rangel'     => [ qw/guitar voice/ ],
+            'Enrique Rangel'    => [ qw/bass/] 
+        }
+    )
+
+   sub john_lennon_played {
+       say join( q/, /, @{ $band_members_in{'The Beatles'}->{'John Lennon'} } );
+
+       # ...or
+       local $" = q/, /;
+       say "@{ $band_members_in{'The Beatles'}->{'John Lennon'} }"
+   }
+
+  band_member_played(member => 'Mike Watt', band => 'Minutemen');
+
+  sub band_member_played {
+      my %params = @_;
+      my ($band, $member) = @params{qw/band member/};
+
+      if ( $band 
+            && member
+            && exists $band_members_in{$band}->{$member}
+            && defined $band_members_in{$band}->{$member} ) {
+
+          local $" = q/, /;
+          say "@{ $band_members_in{'$band'}{'$member} }"
+
+           # ...what happened to the -> between {$band} and {$member}?
+      }
+  }
+
+  # to debug nested data structures you can *use Data::Dumper*
+#+end_src
 ** Operators
-*** Numeric
-*** String
-*** Logical
-*** Bitwise
-*** Other
-
+   - Perl, an "operator-oritented language"?
+   - Reference about operators *perldoc perlop* and *perldoc perlsyn*
+   - Important concepts about operators:
+     1. Precedence:    (1 + 5) * 6
+     2. Associativity, whether left to right or right to left:  2 ** 3 ** 4
+     3. Arity, number of operands on which the operator operates: unary, binary, trinary
+     4. fixity, the position relative to its operands
+	1. Infix: $length * $width
+	2. Prefix and postfix: ++$x and $x++
+	3. Circumfix: qw[one two three four]
+	4. Postcircumfix: $hash{$x} *{} come after $hash and suround $x*
+   - Operator types
+     1. Numeric Operators: +, -, *, /, **, %, +=, --, etc
+     2. String Operators:  =~, !~, eq, ne, gt, lt, ge, le, cmp
+     3. Logical Operators: &&, and, ||, or, //, etc
+     4. Bitwise Operators: >>, <<, &, |, ^
+     5. Repetition operator: x
+     6. Range operator: 1 .. 10, but in boolean context it's the flip flop operator
 ** Functions
 *** Declaration
+    - Use the *sub* builtin followed by a name and a code block
 *** Invoking
+    - When invoking a function use postcircumfix parentheses (optional most of the times)
+    - Arguments can be arbitrary expressions
 *** Parameters
-*** Anonymous functions
+    - A function receives its parameters in a single array *@_*
+    - You need to unpack the arguments in *@_* for one parameter use *shift*
+    - Starting on v5.20 signatures are now supported as "Experimental
+    - If you operate directly on the contents of *@_* you're operating directly the calling values
+#+begin_src perl
+   use experimental 'signatures';
+   
+   sub greet($name = 'Juan') {
+       say "Hello, $name";
+   }
+#+end_src
 
+*** Facts
+    - Every function has a containing namespace
+    - A function can be contained in another namespace anywhere in the code
+    - Lexical subs are available starting on v5.18 *perldoc perlsub*
+#+begin_src perl
+     sub Some::Package::my_function { ... }
+#+end_src
+
+*** Importing from other packages
+    - When loading a module with *use* perl calls *import()* with any arguments passed to it
+#+begin_src perl
+    use strict 'refs';         
+    use strict qw/subs vars/   
+
+    # is equivalent to
+    BEGIN {
+        require strict;
+        strict->import('refs');
+        strict->import( qw/subs vars/ );
+    }
+#+end_src
+
+*** call stack
+    - *caller* inspect the calling context: *my ($package, $file, $line) = caller()*
+    - *caller(n)* where n is the stack frame if n == 0, then stack from top
+    - *Carp::croack* and *Carp::carp* to report from the caller's point of view
 ** Closures
 
 
@@ -615,3 +776,20 @@ x =
   -1
    1
 #+end_example
+* Interesting examples
+** Perl special blocks 
+#+begin_src perl
+print               "    PRINT: main running\n";
+die                 "    DIE:   main dying\n";
+die                 "DIE XXX /* NOTREACHED */";
+END         { print "1st END:   done running"    }
+CHECK       { print "1st CHECK: done compiling"  }
+INIT        { print "1st INIT:  started running" }
+END         { print "2nd END:   done running"    }
+BEGIN       { print "1st BEGIN: still compiling" }
+INIT        { print "2nd INIT:  started running" }
+BEGIN       { print "2nd BEGIN: still compiling" }
+CHECK       { print "2nd CHECK: done compiling"  }
+END         { print "3rd END:   done running"    }
+#+end_src
+
