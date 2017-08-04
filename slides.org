@@ -135,7 +135,6 @@ $ perldoc -v '$/'
    - Channels: #perl-help #perl-qa #perl (also in Freenode)
 
 
-
 * The Perl Language
 ** Names
 #+ATTR_BEAMER: :overlay<-+>
@@ -300,10 +299,58 @@ END_STRING
 #+end_src
 ** Scope
 *** Lexical
-    - Lexical scope governed by the syntax of the program usually within ({ and }) or entire files.
+    - Lexical scope governed by the syntax of the program usually within ({ and }) or entire files
+    - Declared with *my*
+    - They are visible in the declaration scope and in any scopes nested within it
+    - Not visible in sibiling scopes
 *** Our
+    - Creates a local alias to a package variable and still enforces lexical scoping of the alias
+#+begin_src perl
+    package Fun::Package {
+      our $fun_our = "howdy our!";
+      say $fun_our;
+    
+      package Fun::Package::Nested {
+        say "This is nested fun $fun_our";
+      }
+    };
+    
+    package Another::Package {
+      say "Another::Package $Fun::Package::fun_our"
+    }
+    
+    package main;
+    say "From main: ", $Fun::Package::fun_our;
+#+end_src
+
 *** Dynamic
+    - Also applies to visibility but instead of looking on compile time scopes, lookup through the calls stack
+    - Dynamic scope applies only to global and package global variables
+    - While a package global variable may be visible within all scopes, its value may change depending on *local*-ization
+#+begin_src perl
+    our $scope;
+    
+    sub inner {
+        say $scope;
+    }
+    
+    sub main {
+        say $scope;
+        local $scope = 'main() scope';
+        middle();
+    }
+    
+    sub middle {
+        say $scope;
+        inner();
+    }
+    
+    $scope = 'outer scope';
+    main();
+    say $scope;
+#+end_src
 *** State
+    - *state* Declares a lexical variable which has a one time initialization
 ** Control Flow    
 *** if, unless and ternary conditional
     - The condition is evaluated in boolean context
@@ -625,16 +672,178 @@ END_STRING
     - *caller(n)* where n is the stack frame if n == 0, then stack from top
     - *Carp::croack* and *Carp::carp* to report from the caller's point of view
 ** Closures
+#+begin_src perl
+sub gen_fib {
+        my @fibs = (0, 1);
 
+        return sub {
+            my $item = shift;
 
+            if ($item >= @fibs) {
+                for my $calc (@fibs .. $item) {
+                    $fibs[$calc] = $fibs[$calc - 2]
+                                 + $fibs[$calc - 1];
+                }
+            }
+            return $fibs[$item];
+        }
+    }
+
+    # calculate 42nd Fibonacci number
+    my $fib = gen_fib();
+    say $fib->( 42 );
+#+end_src
+** AUTOLOAD
+   - This is the default function to call in a package when calling to an non-existing function
+   - The arguments passed to the non-existing functions are passed to AUTOLOAD via @_
+   - The package global $AUTOLOAD will contain the name of the non-existing function
+   - The caller to the non-existing sub will get whatever AUTOLOAD returns
+#+begin_src perl
+    sub AUTOLOAD {
+        our $AUTOLOAD; 
+        say "Hello from AUTOLOAD: user tried to run $AUTOLOAD"
+
+        # if want to register the non-existent name into the current package
+        my $method = sub { ... };
+
+        no strict 'refs';
+        *{ $AUTLOAD } = $method;
+        return $method->(@_);       # or return goto &$method;
+    }
+
+    non_existing( one => 'argument' );
+#+end_src perl
 * Regular Expressions
-** qr// Operator
-** Quantifiers
-** Modifiers
-** Named Captures
-** Numbered Captures
+  - *m//* or the shorter  *//* identifies a regular expression
+  - *=~* is the binding operator, when evaluated in scalar context a
+    match evaluates to boolean value representing the success or
+    failure of the match
+  - *!~* is the negated version of the binding operator
+  - *s////* 
+#+begin_src perl
+    my $mood = "Because I'm happy";
+    say 'I found a happy in string' if $mood =~ /happy/;
 
-* OO
+    my $mood =~ s/happy/sad/;
+    say $mood;
+#+end_src
+** qr// Operator
+   - Creates first-class regexes that can be stored in variables
+   - can be used to create complex regex patterns
+#+begin_src perl
+    my $happy = qr/happy/i;
+    my $sad   = qr/sad/i;
+
+    say "You're being emotional" if $mood =~ m{ $happy|$sad }
+#+end_src
+
+** Quantifiers
+   - *?* Matches zero or more preceeding expressions
+   - *+* Matches one or more
+   - *\** Matches zero or more
+   - *{m[,[n]]} Matches m but not more than n
+
+** Metacharacters
+   - *.* Match *any* character except a newline
+   - *\w* represents all Unicode alphanumeric characters. Negated as: *\W* 
+   - *\d* Matches a numeric character. Negated as *\D*
+   - *\s* Matches whitespace characters (tab, space, CR, LF, newline). Negated as *\S*
+   - *\Q\E* Disable metacharacter interpretation *m/\Q$literal_text\E/*
+
+** Character Classes
+   - *[]* Group alternatives as *[aeiou]* matches any of the vowels or *[A-Za-z0-9]* to match ranges
+   - *[^]* To negate the atoms within the class like *[^aeiou]*
+
+** Anchors
+   - Fixes the position of a regex
+   - *\A* start of string
+   - *\Z* Match at the end of the string or before newline at the end of the string
+   - *\z* end of string
+   - *^* start of a line
+   - *$* end of a line
+   - *\b* boundary between a word character *\w* and a non-word character *\W*
+
+** Assertions
+   - Assertions are zero-width and don't consume characters from the match
+   - *(?=)* Positive look-ahead assertion *$disastrous_feline = qr/cat(?=astrophe)/*
+   - *(?!)* Negative look-ahead assertion *$safe_feline = qr/cat(?!astrophe)/*;
+   - *(?<=)* Positive look-behind assertion *$space_cat = qr/(?<=\s)cat/*
+   - *\K* variable positive look-behind assertion. *s/foo\Kbar//g* same as *s/(foo)bar/$1/g*
+
+** Named Captures
+   - Capture matches for later use using *(?<name>$regex)*
+   - This will create a new entry in the *%+* hash with the key *name* and the matched text as the value
+   - To remove capturing from parentheses use *(?:)*
+#+begin_src perl
+   my $contact_info = '(202) 456-1111';
+
+   # build regex
+   my $area_code = qr/\(\d{3}\)/;
+   my $local_number = qr/\d{3}-?\d{4}/;
+   my $phone_number = qr/$area_code\s?$local_number/;
+
+   # match and capture
+   if ($contact_info =~ /?<phone>$phone_number/) {
+       say "You can call this guy at $+{ phone }"
+   }
+
+   # Also used in substitutions
+   my $mood = "I'm feeling happy";
+   $mood =~ s/feeling (?<mood>\w+)/not feeling $+{mood}/;
+#+end_src
+
+** Numbered Captures
+   - On unamed captures, captures with parentheses with store the matches in variables $1, $2, ...
+#+begin_src perl
+    if ( $contact_info =~ /($phone_number)/ ) {
+        say "You can call this guy at $1";
+    }
+
+    # also used in substitutions
+    my $mood = "I'm feeling happy";
+    $mood =~ s/feeling (\w+)/not feeling $1/;
+#+end_src 
+
+** Modifiers
+   - Configure the behavior of the regular expression, they can be appear at the end of *m//* or *qr//*
+   - Or they can appear within the expression
+   - *i* Match ignoring case
+   - *m* Allows the *^* and *$* anchors to match at any newline embedded within the string
+   - *s* Treats the source string as a single line so *.* wll match the newline character
+   - *r* Substitution operation returns the result of the substitution without modifying the source
+   - *x* Allows the regexp to have embedded additional whitespace and comments
+   - *g* matches a regex globally throughout a string
+   - *e* allows to write arbitrary code on the right side of a substitution operation
+#+begin_src perl
+    my $re = qr/text/i
+    $re = qr/(?i)text/
+
+    # disable the modifiers by prepending a -
+    $re = qr/(?-i)text/
+
+    # using named captures
+    $re = /(?<name>(?i)text/
+
+    # multi-line regex
+    my $attr_re = qr{
+        \A                    # start of line
+
+        (?:
+          [;\n\s]*            # spaces and semicolons
+          (?:/\*.*?\*/)?      # C comments
+        )*
+
+        ATTR
+
+        \s+
+        (   U?INTVAL
+          | FLOATVAL
+          | STRING\s+\*
+        )
+    }x;
+#+end_src perl
+
+* Objecs
 ** Built-in OO
 *** Classes
 *** Methods
@@ -647,10 +856,76 @@ END_STRING
 
 ** Moose
 *** Classes
-*** Methods
-*** Attributes
+    - define classes by naming them with *package* and *use Moose* within the package
+    - define a property with *has* *perldoc Moose::Manual::Attributes*
+    - define a method with *sub*   *perldoc Moose::Manual*
+#+begin_src perl
+    package Car {
+        use Moose;
+
+        # Properties
+        # =
+        has painted_with => (       # paint goodies
+            is      => 'ro',
+            isa     => 'ArrayRef',
+            default => sub { [qw/blue smurfs/] },
+            lazy    => 1,
+        );
+
+        # Methods
+        # =
+        sub run {
+          my $self = shift;
+          $self->turn_on_engine();
+          $self->fuel_engine()
+        }
+    }
+
+    # Car class user
+     use Car;
+     my $flaming_car = Car->new( painted_with => [ qw/flames devils/ ]  );
+
+     local $" = ' and ';
+     say "This car was painted with @{ $flaming_car->painted_with }";
+
+#+end_src 
 *** Polymorphism
+    - 
 *** Roles
+    - Collection of behaviors and state
+    - Can't instantiate a role
+    - Declared with *Moose::Role*
+    - *requires* lists the required methods for its composing clases
+    - *with* composes the Role into a class
+
+#+begin_src perl
+    package LivingBeing {
+        use Moose::Role;
+
+        requires qw/ name age diet /;
+    }
+
+    package Cat {
+        use Moose;
+     
+        has 'hame' => ( is => 'ro', isa => 'Str' );
+        has 'diet' => ( is => 'rw', isa => 'Str' );
+        has 'birth_year' => (
+            is => 'ro',
+            isa => 'Int',
+            default => sub { (localtime)[5] + 1900 },
+        );
+
+        with 'LivingBeing';
+
+        sub age { 
+            my $self = shift;
+            (localtime)[5] +  1900 - $self->birth_year;
+        }
+    }
+#+end_src
+
+*** Moose::Manual
 
 ** Reflection
 
@@ -695,8 +970,6 @@ $ cpanm Modern::Perl
 
 
 * Good readings
-
-
  This slide consists of some text with a number of bullet points:
  #+ATTR_BEAMER: :overlay <+->
  - the first, very *important*, point!
@@ -776,6 +1049,17 @@ x =
   -1
    1
 #+end_example
+* Interesting Projects
+** PDL
+** BioPerl
+** DBIx::Class
+** Moose
+** Web frameworkds
+*** Catalyst
+*** Dancer
+*** Mojolicious
+
+
 * Interesting examples
 ** Perl special blocks 
 #+begin_src perl
