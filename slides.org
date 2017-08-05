@@ -897,7 +897,7 @@ sub gen_fib {
     - Declared with *Moose::Role*
     - *requires* lists the required methods for its composing clases
     - *with* composes the Role into a class
-
+    - *DOES* will tell if the object "does" a role
 #+begin_src perl
     package LivingBeing {
         use Moose::Role;
@@ -905,24 +905,111 @@ sub gen_fib {
         requires qw/ name age diet /;
     }
 
+    package CalculateAge::From::BirthYear {
+        use Moose::Role;
+        
+        has 'birth_year',
+            is => 'ro',
+            isa => 'Int',
+            default => sub { (localtime)[5] + 1900 };
+
+        sub age {
+            my $self = shift;
+            my $year = (localtime)[5] + 1900
+
+           return $year - $self->birth_year;
+        }
+    }
+
     package Cat {
         use Moose;
      
         has 'hame' => ( is => 'ro', isa => 'Str' );
         has 'diet' => ( is => 'rw', isa => 'Str' );
-        has 'birth_year' => (
-            is => 'ro',
-            isa => 'Int',
-            default => sub { (localtime)[5] + 1900 },
-        );
 
-        with 'LivingBeing';
-
-        sub age { 
-            my $self = shift;
-            (localtime)[5] +  1900 - $self->birth_year;
-        }
+        with 'LivingBeing', 'CalculateAge::From::BirthYear';
     }
+
+    my $kitty = Cat->new( 
+        diet => 'fish', 
+        birth_year => 2010,
+        name => 'dude',
+     );
+
+    say $kitty->name, ' is alive!! ' 
+        if $kitty->DOES('LivingBeing');
+
+    say $kitty->name, ' is ', $kitty->age, ' years old.';
+#+end_src
+
+*** Inheritance
+    - Use a inheritance when one class truly extends another
+    - Use a role when a class needs additional behavior, espacially when that behavior has a meaningful name
+    - Inherit from an existing class by using *extends*, it takes a list of parent classes
+    - use *+* to indicate that an attribute is modifying the attribute
+    - To override a method use *override*
+    - *isa* will tell if the invocant extends a named class
+#+begin_src perl
+  package LightSource {
+    use Moose;
+
+    has 'candle_power',
+      is      => 'ro',
+      isa     => 'Int',
+      default => 1;
+
+    has 'enabled'
+      is      => 'ro',
+      isa     => 'Bool',
+      default => 0,
+      writer  => '_set_enabled';
+
+    sub light {
+      my $self = shift;
+      $self->_set_enabled(1);
+    }
+
+    sub extinguish {
+      my $self = shift;
+      $self->_set_enabled(0);
+    }
+  };
+
+  package SuperCandle {
+    use Moose; extends 'LightSource';
+
+    has '+candle_power', default => 100;
+  }
+
+  package LigthSource::Cranky {
+    use Carp 'carp';
+    use Moose;
+
+    extends 'LigthSource';
+
+    overide light => sub {
+      my $self = shift;
+      carp "Can't light a lit LightSource!" if $self->enabled;
+      super();
+    };
+
+    override extinguish => sub {
+      my $self = shift;
+      carp "Can't extinguish unlit LightSource!" unless $self->enabled;
+      super();
+     };
+  }
+#+end_src
+*** Metaprogramming (Reflection)
+    - Inspect a class via *meta*
+#+begin_src perl
+  my $meta = LightSource->meta;
+
+  say 'LightSource instances have the attributes:';
+  say $_->name for $meta->get_all_attributes;
+
+  say 'LightSource instances support the methods:';
+  say $_->fully_qualified_name for $meta->get_all_methods;
 #+end_src
 
 *** Moose::Manual
