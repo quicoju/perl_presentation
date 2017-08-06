@@ -35,6 +35,10 @@
      + Things that are different, should look different
      + Common constructions should be short
      + Important information should come first
+   - The three virtues of a programmer
+     1. Laziness
+     2. Impatience
+     3. Hubris
 ** Baby Perl
 #+ATTR_BEAMER: :overlay<-+>
   - Analogy when a person starts learning a new spoken language
@@ -133,7 +137,6 @@ $ perldoc -v '$/'
    - Yet Another Perl Conference http://yapc.org
    - Server: irc://irc.perl.org
    - Channels: #perl-help #perl-qa #perl (also in Freenode)
-
 
 * The Perl Language
 ** Names
@@ -844,15 +847,86 @@ sub gen_fib {
 #+end_src perl
 
 * Objecs
-** Built-in OO
+** Vanilla OO
+   - Perl's core object system is deliberately minimal
+   - it only has three rules
+     1. A class is a package
+     2. A method is a function
+     3. A (blessed) reference is an object
+*** bless
+    - Associates a reference to a class name
+    - A blessed reference now is a validn invocant and Perl will
+      perform method dispatch
+    - A constructor is the method that creates a blessed reference
+#+begin_src perl
+  package Fish;
+  use Carp;
+
+  sub new {
+    my ($class, %fish_attrs) = @_;
+
+    croak "This fish needs a name"
+      unless exists $fish_attrs{name};
+
+    croak "This fish needs a diet"
+      unless exists $fish_attrs{name};
+
+    $fish_attrs{birth_year} = (localtime)[5] + 1900
+      unless exists $fish_attrs{birth_year};
+
+    bless \%fish_attrs, $class;
+  }
+
+  sub diet {
+    my ($self, $diet) = @_;
+
+    return $self->{diet}
+      unless $diet;
+
+    $self->{diet} = $diet;
+  }
+
+  sub name {
+    return shift->{name};
+  }
+
+  sub age {
+    return (localtime)[5] + 1900 - shift->{birth_year};
+  }
+
+  1;
+#+end_src
 *** Classes
+    - They're just packages *package*
 *** Methods
-*** Static Methods
+    - They're just functions *sub*
+    - If want to override a parent method just declare the method in
+      the child class using the same name, and call *SUPER::* to
+      dispatch the parent
+#+begin_src perl
+  sub overriden {
+    my $self = shift;
+    return $self->SUPER::overriden(@_);
+  }
+#+end_src
 *** Inheritance
+    - Perl uses a package global variable *@ISA* to keep track of inheritance
+    - The method dispatcher looks in each class's *@ISA* to find the names of its parents
+
+#+begin_src perl
+package InjuredPlayer {
+  @InjuredPlayer::ISA = qw/Player Hospital::Patient/;
+}
+
+# Better yet use the parent pragma
+package InjuredPlayer {
+  use parent qw/Player Hospital::Patient/;
+}
+#+end_src
+
 **** DOES()
 **** AUTOLOAD()
 **** SUPER()
-*** bless
 
 ** Moose
 *** Classes
@@ -889,8 +963,6 @@ sub gen_fib {
      say "This car was painted with @{ $flaming_car->painted_with }";
 
 #+end_src 
-*** Polymorphism
-    - 
 *** Roles
     - Collection of behaviors and state
     - Can't instantiate a role
@@ -1000,7 +1072,7 @@ sub gen_fib {
      };
   }
 #+end_src
-*** Metaprogramming (Reflection)
+*** Metaprogramming and Reflection
     - Inspect a class via *meta*
 #+begin_src perl
   my $meta = LightSource->meta;
@@ -1011,11 +1083,15 @@ sub gen_fib {
   say 'LightSource instances support the methods:';
   say $_->fully_qualified_name for $meta->get_all_methods;
 #+end_src
+    - Once a module has been loaded, it's registered in *%INC*
+    - *Class::Load* does the task of properly checking this
+    - To check if a package exists ask *UNIVERSAL* *$pkg->can('can')*
+    - To check the version of a module *$module->VERSION()*
+    - To check if a function exists in a package *$pkg->can( $func )*
+    - 
 
 *** Moose::Manual
-
-** Reflection
-
+    - Look at the manual for tons of interesting features
 * Misc
 ** Idioms
 ** Exceptions
