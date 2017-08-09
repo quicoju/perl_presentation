@@ -1112,6 +1112,53 @@ package InjuredPlayer {
      + *-s* File is Non-empty
      + *perldoc -f -X* for more tests
 ** Idioms
+   - We reviewed different idioms when looking at arrays and hashes.
+*** Schwartzian Transform
+   - The *Schwartzian Transform* list handling idiom borrowed from Lisp
+#+begin_src perl
+  # Associate the names of workers and phone extensions
+
+  # Problem make a phone book, sorted by name;
+
+  my %extensions = (
+    '000' => 'Freddie',
+    '002' => 'Brian',
+    '042' => 'John',
+    '044' => 'Roger',
+   );
+
+  # sort list by name alphabetically, need to sort by values
+  my @sorted_names = sort values %extensions;
+
+  # map/transform data to preserve key/value information
+  my @pairs = map { [ $_, $extensions{$_} ] } keys %extensions;
+
+  # sort data using new representation
+  my @sorted_pairs = sort { $a->[1] cmp $b->[1] } @pairs;
+
+  # format the sorted data
+  my @formatted_exts = map { "$_->[1], ext. $_->[0]" } @sorted_pairs;
+
+  # print data
+  say for @formatted_exts;
+
+  # Schwartzian Transform chain all the previous steps
+  say for
+    map  { "$_->[1], ext. $_->[0]" }
+    sort { $a->[1] cmp $b->[1] }
+    map  { [ $_ => $extensions{$_} ] }
+    keys %extensions;
+#+end_src
+*** File Slurping
+#+begin_src perl
+  my $file = do { local $/; <$fh> };
+
+  # ...or
+  my $file; { local $/; $file = <$fh> };
+
+  # .. or
+  use File::Slurper; my $content = read_text($filename);)
+#+end_src
 ** Exceptions
    - To throw an exception, use *die* or *croak*
    - To catch an exception, evaluate the code that can throw the
@@ -1150,9 +1197,24 @@ use strict;
   no strict 'refs';
 }
 #+end_src
-** Taint
+** Taint Mode
+   - Sticky piece of metadata attached to all data which comes from the outside
+   - Any data derived from tainted data is also tainted *perldoc perlsec*
+   - Launch your program with the *-T* command line argument to enable tainted mode
+   - *Scalar::Util::tainted()* returns true if its argument is tainted
+   - To remove tain from data, extract known-good portions of the data
+     with a regular expression capture
+   - *-t* flag enables taiin mode but reduces tain violations from
+     excemptions to warnings
+#+begin_src perl
+  die 'Number still tainted!' unless $number =~ /(\(/d{3}\) \d{3}-\d{4})/;
+  my $safe_number = $1;
+#+end_src
 ** One liners
 ** Fun
+*** Acme namespace
+*** JAPH / Obfuscated Perl Contest
+**** The dromedary
 * Testing
 ** Test::More
    - *ok()* The most basic assertion test function, takes two values
@@ -1243,6 +1305,47 @@ use strict;
   - *Module::Build* alternative for *ExtUtils::MakeMaker* written in pure Perl
 
 * Good readings
+** Camel book - http://shop.oreilly.com/product/9780596000271.do
+** Modern Perl - http://modernperlbooks.com/books/modern_perl_2016/index.html
+** Perl Best Practices - http://shop.oreilly.com/product/9780596001735.do
+** Higher Order Perl - http://hop.perl.plover.com/
+** Mastering Algorithms with Perl - http://shop.oreilly.com/product/9781565923980.do
+* Projects
+** Database
+*** DBI - http://dbi.perl.org/
+*** DBIx::Class - http://www.dbix-class.org/about.html
+** Web programming
+*** Plack - http://plackperl.org/
+** Web frameworkds
+*** Catalyst - http://www.catalystframework.org/
+*** Dancer - http://perldancer.org/
+*** Mojolicious - http://mojolicious.org/
+** Data Science and Math
+*** PDL - http://pdl.perl.org/
+** Image Manipulation
+*** Imager - https://metacpan.org/pod/Imager
+** Life Science
+*** BioPerl - http://bioperl.org/
+** Object Oritentation Systems
+*** http://moose.iinteractive.com/en/
+* Interesting examples
+** Perl special blocks 
+#+begin_src perl
+print               "    PRINT: main running\n";
+die                 "    DIE:   main dying\n";
+die                 "DIE XXX /* NOTREACHED */";
+END         { print "1st END:   done running"    }
+CHECK       { print "1st CHECK: done compiling"  }
+INIT        { print "1st INIT:  started running" }
+END         { print "2nd END:   done running"    }
+BEGIN       { print "1st BEGIN: still compiling" }
+INIT        { print "2nd INIT:  started running" }
+BEGIN       { print "2nd BEGIN: still compiling" }
+CHECK       { print "2nd CHECK: done compiling"  }
+END         { print "3rd END:   done running"    }
+#+end_src
+
+* Beamer Examples
  This slide consists of some text with a number of bullet points:
  #+ATTR_BEAMER: :overlay <+->
  - the first, very *important*, point!
@@ -1287,7 +1390,6 @@ with its own headline, is displayed in a block:
     #+ATTR_LATEX: width=\textwidth
     [[file:///home/quicoju/doc/notes/perl_presentation/a-simple-slide.png]]
 
-
 ** Babel
    :PROPERTIES:
    :BEAMER_envargs: [t]
@@ -1322,30 +1424,3 @@ x =
   -1
    1
 #+end_example
-* Interesting Projects
-** PDL
-** BioPerl
-** DBIx::Class
-** Moose
-** Web frameworkds
-*** Catalyst
-*** Dancer
-*** Mojolicious
-
-* Interesting examples
-** Perl special blocks 
-#+begin_src perl
-print               "    PRINT: main running\n";
-die                 "    DIE:   main dying\n";
-die                 "DIE XXX /* NOTREACHED */";
-END         { print "1st END:   done running"    }
-CHECK       { print "1st CHECK: done compiling"  }
-INIT        { print "1st INIT:  started running" }
-END         { print "2nd END:   done running"    }
-BEGIN       { print "1st BEGIN: still compiling" }
-INIT        { print "2nd INIT:  started running" }
-BEGIN       { print "2nd BEGIN: still compiling" }
-CHECK       { print "2nd CHECK: done compiling"  }
-END         { print "3rd END:   done running"    }
-#+end_src
-
