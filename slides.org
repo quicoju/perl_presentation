@@ -1092,45 +1092,155 @@ package InjuredPlayer {
 
 *** Moose::Manual
     - Look at the manual for tons of interesting features
+** UNIVERSAL
+   - The *UNIVERSAL* package is the ancestor of all other packages, the ultimate parent
+   - provides the following methods
+     1. VERSION() - Returns the value of the $VERSION package global
+     2. DOES() - Supports the use of Roles in programs
+     3. can() - Returns the function reference if it's supported
+     4. isa() - Returns true if its invocant derives from the named class
 * Misc
+** Files
+   - Perl offers a Unix style view of the filesystem. Use *File::Spec*
+     to protably manipulate file paths
+   - Another option for this task *Path::Class*
+   - *-X* test operators
+     + *-e* File exists
+     + *-f* File is a plain file
+     + *-d* File is a directory
+     + *-r* File allows read
+     + *-s* File is Non-empty
+     + *perldoc -f -X* for more tests
 ** Idioms
 ** Exceptions
+   - To throw an exception, use *die* or *croak*
+   - To catch an exception, evaluate the code that can throw the
+     exception withing an eval block, inspect the exception using *$@*
+#+begin_src perl
+  local $@;
+
+  # catch the exception
+  my $fh = eval { open_log_file('some_file.log'} };
+
+  # analyze the exception
+  if (my $exception = $@) {
+   # re-throw the exception if we can't handle it here
+   die $exception unless $exception =~ /^Can't open logging/;
+   $fh = log_to_syslog();
+  }
+#+end_src
 ** Pragmas
+   - Perl modules that influence the behavior of the language
+   - By convension, pragma names are written in lower case
+   - Using a pragma makes its behavior effective within a lexical scope
+   - To disable pragmas, it can be done in a lexical scpoe as well with *no*
+   - Some useful pragmas:
+     1. strict   *Always use*
+     2. warnings *Always use*
+     3. utf8
+     4. autodie
+     5. constant
+     6. vars
+     7. feature *use 5.18* or *use feature ':5.18'*
+     8. experimental
+     9. less - Write your own lexical pragmas *perldoc perlpragma*
+#+begin_src perl
+use strict;
+{
+  no strict 'refs';
+}
+#+end_src
 ** Taint
 ** One liners
 ** Fun
-
 * Testing
 ** Test::More
+   - *ok()* The most basic assertion test function, takes two values
+   - *is()* Compares two values using Perl's eq operator. Aplies scalar context/
+   - *isnt()* Compares two values using ne
+   - *cmp_ok()* You can provide the comparision operator
+   - *isa_ok()* Tests if a reference is of any type
+   - *can_ok()* Tests if an object provides functionality
+   - *is_deeply()* Compares two references to ensure their contents are equal
+#+begin_src perl
+  Use Test::More tests => 1;  # Test plan
+  ok  1, 'the number one is a true value';
+
+  done_testing();
+#+end_src 
 ** Test Anything Protocol
+   - The output from the tests are formatted in /Test Anything Protocol (TAP)/
+   - http://testanything.org
 ** Running Tests
+   - The program *prove* runs tests, interprets TAP and display relevant information
+   - See *perldoc prove* for more options 
 ** Organizing tests
 
+   - CPAN distributions should include a *t/* directory containing test files *.t*
+   - When building a distribution, the testing step runs all the tests
+   - Two common organization of tests are used:
+     1. Each *.t* file corresponds to a *.pm* file
+     2. Each *.t* file corresponds to a logical feature
+   - Hundered of testing modules available
 * Modules
+  - Package contained in its own file and loadable with *use* or *require*
+  - A module must be valid perl codd
+  - It must end with an expression that evaluates to true, so the
+    parser knows that it has loaded successfully
+  - When loading a module, Perl splits the pacakge name on (::) and
+    turns the components of the package name into a file path.
+  - The search is made in every directory in *@INC*
 ** Using and Importing
+   - With *use* perl loads a module from disk and calls *import* with any arguments provided
+   - The *no* builtin calls a module's *unimport* passing any arguments
+   - The call to *import* and *unimport* happens during compilation
 ** Exporting
+   - The module *Exporter* is the standard way to export symbols from a module
+   - Relies on the presence of *@EXPORT_OK* and *@EXPORT*
+
+#+begin_src perl
+  package StrangeMonkey::Utilities;
+  use Exporter 'import';
+
+  # Will export these symbols upon request 
+  our @EXPORT_OK = qw/round translate screech/;
+
+  # Will export these symbols by defaul
+  our @EXPORT = qw/dance sleep $variable/;
+
+  # Then on client code ...
+  use StrangeMonkey::Utilities qw/round sleep/;  # will import round and sleep
+#+end_src
 
 * Distributions
+  - Collection of metadata and modules into a single, redistributable and installable unit
+  - The easiest way to configure, build, package, test and install
+    Perl code is to follow the CPAN's conventions
+  - A distribution built on these standards can be tested on several
+    versions of Perl on several different hardware platforms
 ** Attributes of a Distribution
 #+ATTR_BEAMER: :overlay<-+>
-  - The behavior of automated CPAN installers
-  - Metadata to describe what each distribution provides and expects
-  - Machine-readable documentation and licensing
+  - *Build.PL* or *Makefile.PL* - Drives the configuration, build, test, bundle and install
+  - *MANIFEST* - List of all files contained in the distribution
+  - *META.yml* or *META.json* - Metadata about the distribution and dependencies
+  - *README* - Description of the distribution, copyright and licensing information
+  - *lib/* - Directory containing Perl modules
+  - *t/* - Directory containing test files
+  - *Changes* - Text Log of every significant change to the distribution
+
 ** CPAN Tools for managing distributions 
 #+ATTR_BEAMER: :overlay<-+>
-  - Default client: cpan
-#+begin_src sh :results output :exports both
-$ cpan
-cpan[1] > install Modern::Perl
-$ cpan Modern::Perl
-#+end_src
-  - Light and fast client: cpanm
-  - Provided by App::cpanminus
-#+begin_src sh :results output :exports both
-$ curl -LO http://xrl.us/cpanm
-$ cpanm Modern::Perl
-#+end_src
-
+  - *CPANTS* http://cpants.perl.org evaluates each uploaded
+    distribution against packaging guidelines
+  - *CPAN.pm* officieal CPAN client
+  - *ExtUtils::MakeMaker* Package, build, test and install Perl
+    distributions works with *Makefile.PL*
+  - *App::cpanminus* configuration-free CPAN client
+  - *App::perlbrew* helps you to manage multiple installations of Perl.
+  - *CPAN::Mini* Allows to create a private mirror of teh public CPAN
+  - *Dist::Zilla* Automatest away common distribution tasks
+  - *Carton and Pinto* Manage and install code's dependencies
+  - *Module::Build* alternative for *ExtUtils::MakeMaker* written in pure Perl
 
 * Good readings
  This slide consists of some text with a number of bullet points:
@@ -1221,7 +1331,6 @@ x =
 *** Catalyst
 *** Dancer
 *** Mojolicious
-
 
 * Interesting examples
 ** Perl special blocks 
