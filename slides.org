@@ -21,24 +21,26 @@
 #+latex_header: \AtBeginSection[]{\begin{frame}<beamer>\frametitle{Topic}\tableofcontents[currentsection]\end{frame}}
 
 * Philosophy
-** Motivation
-#+ATTR_BEAMER: :overlay<-+>
-   - Pragmatic
-     + It will mold itself to do what you mean.
-     + Because only you know what you need.
-     + Won't enforce programming paradigm
-     + Perl is a language for getting your job done
-   - Motto
-     + "There's more that one way to do it" *TIMTOWTDI* (Tim Toady)
-     + "Easy things should be easy and hard things should be possible"
-   - Larry Wall designed syntax based on the following principles
-     + Things that are different, should look different
-     + Common constructions should be short
-     + Important information should come first
-   - The three virtues of a programmer
-     1. Laziness
-     2. Impatience
-     3. Hubris
+** Motivation (Pragmatic)
+   #+ATTR_BEAMER: :overlay<-+>
+    - It will mold itself to do what you mean.
+    - Because only you know what you need.
+    - Won't enforce programming paradigm
+    - Perl is a language for getting your job done
+** Motivation (Motto)
+   #+ATTR_BEAMER: :overlay<-+>
+    - TIMTOWTDI (Tim Toady)
+    - Easy things should be easy and hard things should be possible
+** Motivation (Principles)
+   #+ATTR_BEAMER: :overlay<-+>
+    - Things that are different, should look different
+    - Common constructions should be short
+    - Important information should come first
+** Motivation (virtues of a programmer)
+   #+ATTR_BEAMER: :overlay<-+>
+    - Laziness
+    - Impatience
+    - Hubris
 ** Baby Perl
 #+ATTR_BEAMER: :overlay<-+>
   - Analogy when a person starts learning a new spoken language
@@ -46,7 +48,6 @@
   - Continue with simple conversations
   - Don't need to know a whole language to express ideas and concepts
   - Keep practicing and become a native speaker
-
 * First steps
 ** perldoc
 #+ATTR_BEAMER: :overlay<-+>
@@ -63,10 +64,10 @@ $ perldoc -v '$/'
 #+end_src
 
 ** Built-in Data Structures (sigils)
-   - Scalars variables use ($)
-   - Array variables use (@)
-   - Hash variables use (%)
-   - They allow to separate variables into different namespaces: $name, @name, %name
+   - Scalars variables ($)
+   - Array variables (@)
+   - Hash variables (%)
+   - They allow to separate variables into different namespaces: =$name, @name, %name=
 ** Context
 *** Amount Context (void, scalar, list)
     - Governs how many items you expect from an operation 
@@ -158,11 +159,11 @@ $ perldoc -v '$/'
 ** Values
 *** Strings
     - Piece of textual or binary data with no particular formatting, delimited by single or double quotes.
-    - For escaping use backslash (\).
-    - To use escaped sequence of meta-characters do it under double quotes "\t \n \b".
-    - Concatenate stings with the concatenation operator (.)
-    - use qq{} as an altenative to (") to prevent escaping repeatedly (\")
-    - use q{}  as an alternative to (') to prevent escaping repeatedly (\')
+    - For escaping use backslash *\*.
+    - To use escaped sequence of meta-characters do it under double quotes "=\t= =\n= =\b=".
+    - Concatenate stings with the concatenation operator *.*
+    - use qq{} as an altenative to *""* to prevent escaping repeatedly the double quotes
+    - use q{}  as an alternative to *'* to prevent escaping repeatedly the single quote
     - Here docs are available
 #+begin_src perl
    my $single_quoted_str = 'To be or not to be.';
@@ -188,20 +189,20 @@ END_STRING
   my $octal = 012;
   my $hex = 0x12;
 #+end_src
-    - Support of "_" as number separator: 1_000_000_000
+    - Support of *_* as number separator: 1_000_000_000
     - Perl treats everything that looks like a number as a number in numeric context
 
 *** Undef
     - Represents an unassigned, undefined and unknown value
-    - To set a variable to an undefined value: $var = undef;
-    - To test for a defined value: defined $var;
+    - To set a variable to an undefined value: *$var = undef*;
+    - To test for a defined value: *defined $var*;
 
 *** Lists
-    - `()' Denote a list, in scalar context evaluates to undef
-    - `()' in list context it's an empty list and in lvalue imposes list context
-    - my $count = () = get_list_of_colors();
-    - The comma operator ',' creates a list, and it has very low precedence
-    - The range operator also creates lists '..'
+    - *()* Denote a list, in scalar context evaluates to undef
+    - *()* in list context it's an empty list and in lvalue imposes list context
+    - *my $count = () = get_list_of_colors();*
+    - The comma operator *,* creates a list, and it has very low precedence
+    - The range operator also creates lists *..*
 #+begin_src perl
     my @numbers  = (1, 2, 3, 4, 5);
     my @numbers2 =  1 .. 5;
@@ -212,7 +213,7 @@ END_STRING
 ** Scalars
 #+ATTR_BEAMER: :overlay<->
    - Fundamental data type: single, discrete value. String, number, fh, etc.
-   - Identified by the ($) sigil
+   - Identified by the *$* sigil
    - Any value type can be [re]assigned arbitrarily
    - Contains a numeric slot and a string slot
    - Subject to string interpolation
@@ -225,7 +226,7 @@ END_STRING
    - Use each to iterate over the array
    - Slices an be used access multiple elements at the same time
    - In list context, arrays flatten into lists
-   - Array interpolate into strings as the stringification of each element separated by /$"/
+   - Array interpolate into strings as the stringification of each element separated by $"
 #+begin_src perl
    my @zero_to_nine = 0 .. 9;
 
@@ -258,11 +259,11 @@ END_STRING
   @data[ @indexes ] = ($init_value) x @indexes;
 #+end_src
 *** Array Operations (destructive) (See examples)
-    - push: Add to the end 
-    - pop: Pull from the end
-    - unshift: Push to the front
-    - shift: Pull from the front
-    - splice: remove, replaces elements from an array
+    - *push*: Add to the end 
+    - *pop*: Pull from the end
+    - *unshift*: Push to the front
+    - *shift*: Pull from the front
+    - *splice*: remove, replaces elements from an array
 #+begin_src perl
   # Merge multiple arrays in one push
   push my @pets, @dogs, @cats, @brids;
@@ -701,6 +702,7 @@ sub gen_fib {
    - The arguments passed to the non-existing functions are passed to AUTOLOAD via @_
    - The package global $AUTOLOAD will contain the name of the non-existing function
    - The caller to the non-existing sub will get whatever AUTOLOAD returns
+
 #+begin_src perl
     sub AUTOLOAD {
         our $AUTOLOAD; 
@@ -713,9 +715,9 @@ sub gen_fib {
         *{ $AUTLOAD } = $method;
         return $method->(@_);       # or return goto &$method;
     }
-
     non_existing( one => 'argument' );
-#+end_src perl
+#+end_src
+
 * Regular Expressions
   - *m//* or the shorter  *//* identifies a regular expression
   - *=~* is the binding operator, when evaluated in scalar context a
@@ -741,17 +743,17 @@ sub gen_fib {
 #+end_src
 
 ** Quantifiers
-   - *?* Matches zero or more preceeding expressions
-   - *+* Matches one or more
-   - *\** Matches zero or more
-   - *{m[,[n]]} Matches m but not more than n
+   - =?= Matches zero or more preceeding expressions
+   - =+= Matches one or more
+   - =*= Matches zero or more
+   - ={m[,[n]]}= Matches m but not more than n
 
 ** Metacharacters
    - *.* Match *any* character except a newline
-   - *\w* represents all Unicode alphanumeric characters. Negated as: *\W* 
-   - *\d* Matches a numeric character. Negated as *\D*
-   - *\s* Matches whitespace characters (tab, space, CR, LF, newline). Negated as *\S*
-   - *\Q\E* Disable metacharacter interpretation *m/\Q$literal_text\E/*
+   - =\w= represents all Unicode alphanumeric characters. Negated as: =\W=
+   - =\d= Matches a numeric character. Negated as =\D=
+   - =\s= Matches whitespace characters (tab, space, CR, LF, newline). Negated as =\S=
+   - =\Q\E= Disable metacharacter interpretation =m/\Q$literal_text\E/=
 
 ** Character Classes
    - *[]* Group alternatives as *[aeiou]* matches any of the vowels or *[A-Za-z0-9]* to match ranges
@@ -759,19 +761,22 @@ sub gen_fib {
 
 ** Anchors
    - Fixes the position of a regex
-   - *\A* start of string
-   - *\Z* Match at the end of the string or before newline at the end of the string
-   - *\z* end of string
+   - =\A= start of string
+   - =\Z= Match at the end of the string or before newline at the end of the string
+   - =\z= end of string
    - *^* start of a line
    - *$* end of a line
-   - *\b* boundary between a word character *\w* and a non-word character *\W*
+   - =\b= boundary between a word character =\w= and a non-word character =\W=
 
 ** Assertions
    - Assertions are zero-width and don't consume characters from the match
    - *(?=)* Positive look-ahead assertion *$disastrous_feline = qr/cat(?=astrophe)/*
    - *(?!)* Negative look-ahead assertion *$safe_feline = qr/cat(?!astrophe)/*;
-   - *(?<=)* Positive look-behind assertion *$space_cat = qr/(?<=\s)cat/*
-   - *\K* variable positive look-behind assertion. *s/foo\Kbar//g* same as *s/(foo)bar/$1/g*
+   - *(?<=)* Positive look-behind assertion
+#+begin_src perl
+    $space_cat = qr/(?<=\s)cat/
+#+end_src
+   - =\K= variable positive look-behind assertion. =s/foo\Kbar//g= same as *s/(foo)bar/$1/g*
 
 ** Named Captures
    - Capture matches for later use using *(?<name>$regex)*
@@ -844,7 +849,7 @@ sub gen_fib {
           | STRING\s+\*
         )
     }x;
-#+end_src perl
+#+end_src
 
 * Objecs
 ** Vanilla OO
@@ -1210,11 +1215,8 @@ use strict;
   die 'Number still tainted!' unless $number =~ /(\(/d{3}\) \d{3}-\d{4})/;
   my $safe_number = $1;
 #+end_src
-** One liners
-** Fun
-*** Acme namespace
-*** JAPH / Obfuscated Perl Contest
-**** The dromedary
+** One liners 
+   - http://www.catonmat.net/download/perl1line.txt
 * Testing
 ** Test::More
    - *ok()* The most basic assertion test function, takes two values
@@ -1237,7 +1239,6 @@ use strict;
    - The program *prove* runs tests, interprets TAP and display relevant information
    - See *perldoc prove* for more options 
 ** Organizing tests
-
    - CPAN distributions should include a *t/* directory containing test files *.t*
    - When building a distribution, the testing step runs all the tests
    - Two common organization of tests are used:
@@ -1345,6 +1346,11 @@ CHECK       { print "2nd CHECK: done compiling"  }
 END         { print "3rd END:   done running"    }
 #+end_src
 
+* -Ofun
+*** Acme namespace -  https://metacpan.org/search?size=20&q=Acme
+*** JAPH / Obfuscated Perl Contest - https://en.wikipedia.org/wiki/Obfuscated_Perl_Contest
+**** The dromedary
+
 * Beamer Examples
  This slide consists of some text with a number of bullet points:
  #+ATTR_BEAMER: :overlay <+->
@@ -1355,8 +1361,6 @@ END         { print "3rd END:   done running"    }
 
  The above list could be numbered or any other type of list and may
  include sub-lists.
-
-** Control Flow
 
 ** A more complex slide
 This slide illustrates the use of Beamer blocks.  The following text,
@@ -1383,13 +1387,6 @@ with its own headline, is displayed in a block:
       *example* block
 
 *** A screenshot                                            :BMCOL:B_example:
-    :PROPERTIES:
-    :BEAMER_col: 0.6
-    :BEAMER_env: example
-    :END:
-    #+ATTR_LATEX: width=\textwidth
-    [[file:///home/quicoju/doc/notes/perl_presentation/a-simple-slide.png]]
-
 ** Babel
    :PROPERTIES:
    :BEAMER_envargs: [t]
