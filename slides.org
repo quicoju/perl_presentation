@@ -20,24 +20,93 @@
 #+COLUMNS: %40ITEM %10BEAMER_env(Env) %9BEAMER_envargs(Env Args) %4BEAMER_col(Col) %10BEAMER_extra(Extra)
 #+latex_header: \AtBeginSection[]{\begin{frame}<beamer>\frametitle{Topic}\tableofcontents[currentsection]\end{frame}}
 
+* Beamer Examples
+ This slide consists of some text with a number of bullet points:
+ #+ATTR_BEAMER: :overlay <+->
+ - the first, very *important*, point!
+ - the previous point shows the use of the special markup which
+   translates to the Beamer specific /alert/ command for highlighting
+   text.
+
+ The above list could be numbered or any other type of list and may
+ include sub-lists.
+
+** A more complex slide
+This slide illustrates the use of Beamer blocks.  The following text,
+with its own headline, is displayed in a block:
+*** Org mode increases productivity                               :B_theorem:
+    :PROPERTIES:
+    :BEAMER_env: theorem
+    :END:
+    - org mode means not having to remember LaTeX commands.
+    - it is based on ascii text which is inherently portable.
+    - Emacs!
+    \hfill \(\qed\)
+
+** Two columns
+*** A block						      :B_block:BMCOL:
+    :PROPERTIES:
+    :BEAMER_env: block
+    :BEAMER_col: 0.4
+    :END:
+    - this slide consists of two columns
+    - the first (left) column has no heading and consists of text
+    - the second (right) column has an image and is enclosed in an
+      *example* block
+      *example* block
+    \hfill \(\qed\)
+*** A screenshot                                            :BMCOL:B_example:
+** Babel
+   :PROPERTIES:
+   :BEAMER_envargs: [t]
+   :END:
+*** Octave code						      :BMCOL:B_block:
+    :PROPERTIES:
+    :BEAMER_col: 0.45
+    :BEAMER_env: block
+    :END:
+#+name: octaveexample
+#+begin_src octave :results output :exports both
+A = [1 2 ; 3 4]
+b = [1; 1];
+x = A\b
+#+end_src
+*** The output						      :BMCOL:B_block:
+    :PROPERTIES:
+    :BEAMER_col: 0.4
+    :BEAMER_env: block
+    :BEAMER_envargs: <2->
+    :END:
+#+results: octaveexample
+#+begin_example
+A =
+
+   1   2
+   3   4
+
+x =
+
+  -1
+   1
+#+end_example
 * Philosophy
 ** Motivation (Pragmatic)
-   #+ATTR_BEAMER: :overlay<-+>
+#+ATTR_BEAMER: :overlay<-+>
     - It will mold itself to do what you mean.
     - Because only you know what you need.
     - Won't enforce programming paradigm
     - Perl is a language for getting your job done
 ** Motivation (Motto)
-   #+ATTR_BEAMER: :overlay<-+>
+#+ATTR_BEAMER: :overlay<-+>
     - TIMTOWTDI (Tim Toady)
     - Easy things should be easy and hard things should be possible
 ** Motivation (Principles)
-   #+ATTR_BEAMER: :overlay<-+>
+#+ATTR_BEAMER: :overlay<-+>
     - Things that are different, should look different
     - Common constructions should be short
     - Important information should come first
 ** Motivation (virtues of a programmer)
-   #+ATTR_BEAMER: :overlay<-+>
+#+ATTR_BEAMER: :overlay<-+>
     - Laziness
     - Impatience
     - Hubris
@@ -64,58 +133,61 @@ $ perldoc -v '$/'
 #+end_src
 
 ** Built-in Data Structures (sigils)
-   - Scalars variables ($)
-   - Array variables (@)
-   - Hash variables (%)
+   - Scalars variables =($)=
+   - Array variables =(@)=
+   - Hash variables =(%)=
    - They allow to separate variables into different namespaces: =$name, @name, %name=
 ** Context
 *** Amount Context (void, scalar, list)
-    - Governs how many items you expect from an operation 
-#+name: amount_context
-#+begin_src perl :results output :exports both
-   - build_sales_report()                          # void context
-   - my $earnings  = build_earnings_report()       # scalar context
-   - my @details   = build_earnings_report()       # list context
-   - my ($report)  = build_earnings_report()       # list context
-   - process_report( build_earnings_report() )     # list context
-   - save_amount( scalar build_earnings_report() ) # scalar context
+  - Governs how many items you expect from an operation
+#+begin_src perl
+   build_sales_report();                    # void
+   my $earnings  = build_earnings_report(); # scalar
+   my @details   = build_earnings_report(); # list
+   my ($report)  = build_earnings_report(); # list
+   process( build_earnings_report() );      # list
+   save_amount( scalar build_earnings_report() )
 #+end_src
-
+** Context
 *** Type Context (string, numeric, boolean)
-    - Defines who Perl interprets a piece of data
+    - Defines how Perl interprets a piece of data
     - In numeric context strings that don't look like numbers evaluate to 0
-    - *Watch out!!*
+
+*** Example
 #+begin_src perl :results output :exports both
    my $name = 'Francisco'
-   say 'Really the same person?' if $name  == 'Frank';  # == imposes numeric context
-   say 'Really the same person?'  if $name eq 'Frank';  # eq imposes string context
+
+   say 'Really the same person?'
+     if $name  == 'Frank'; # numeric context
+
+   say 'Definetly not the same person'
+     unless $name eq 'Frank'; # string context
 #+end_src
 
-** Perl pronouns
-*** The default scalar variable $_ (topic variable)
+** Perl Pronouns: Default Scalar $_ (topic)
 #+ATTR_BEAMER: :overlay<-+>
    - Most notable in its absence, many builtin operations work on this variable
    - Equivalent to the pronoun /it/
+*** Code
 #+begin_src perl :results output :exports both
-    <$fh>       # read line from file handle in $fh and stores the line in $_
-    print(uc)   # prints the contents of $_ to stdout in upper case
-#+end_src
-   - Multiple built-ins operate on this variable: uc, say, print, lc, length, Perl Regex.
-   - Looping directives default to $_ as the iteration variable
-#+begin_src perl
-  say "#$_" for 1 .. 10;
-  while (<STDIN>)
-  {
-     chomp;
-     say scalar reverse;
-  }
+   <$fh>   # read it
+   uc      # Upper case - it
 #+end_src
 
-*** The default Array variable @_, @ARGV
+** Perl Pronouns: Default Scalar $_ (topic)
+   - Multiple built-ins operate on this variable: uc, say, print, lc, length, Perl Regex.
+   - Looping directives default to $_ as the iteration variable
+*** Code (re.pl)
+#+begin_src perl
+  say for 1 .. 10;
+  say uc reverse while (<STDIN>);
+#+end_src
+
+** Perl Pronouns: Default Arrays
 #+ATTR_BEAMER: :overlay<-+>
     - @_ is equivalent to the pronoun /they/ and /them/.
     - @ARGV contains the command line arguments to the program.
-    - shift and pop operate on these to variable by default.
+    - =shift= and =pop= operate on these to variable by default.
     - When operating on an empty filehandle, each element of @ARGV
       will be treated as a file name to open for reading.
 
@@ -136,28 +208,30 @@ $ perldoc -v '$/'
    - Perl Buzz   http://perlbuzz.com
 ** IRC and Events
    - Yet Another Perl Conference http://yapc.org
-   - Server: irc://irc.perl.org
+   - IRC Server: =irc://irc.perl.org=
    - Channels: #perl-help #perl-qa #perl (also in Freenode)
 
 * The Perl Language
 ** Names
 #+ATTR_BEAMER: :overlay<-+>
     - Used for naming everything: functions, variables, packages, etc.
-    - Valid names begin in `_' or a letter
+    - Valid names begin with underscore  or a letter
     - Followed by any combination of letters, numbers and underscores
-    - invalid names `invalid name', `3rdStrike', `~rare', `lisp-like-name'
+    - invalid names =invalid name=, =3rdStrike=, =~rare=, =lisp-like-name=
 ** Variables (sigils again)
-   - The sigil governs how to manipulate the data of a variable
-   - The ($) will access a single element of an array or hash: $hash{ $key }, $array[ $index ] as accessor or as lvalue
+   - The sigil defines the type of value that a variable can hold
+   - Governs to manipulate the data of a variable
+   - The =$= will access a single element as accessor or as lvalue
+      + Of an hash:  =$hash{ $key }=
+      + Of an array: =$array[ $index ]= 
 ** Namespaces
     - Namespace is a collection of symbols grouped under a globally unique name
-    - Multi-level namespaces are allowed by joining names with (::) like in Modern::Perl
+    - Multi-level namespaces are allowed by joining names with =::= like in =Modern::Perl=
     - Within the namespace the only symbol name can be used
     - Outside the namespace use the fully qualified name
     - The default namespace is main
 
-** Values
-*** Strings
+** Values (Strings)
     - Piece of textual or binary data with no particular formatting, delimited by single or double quotes.
     - For escaping use backslash *\*.
     - To use escaped sequence of meta-characters do it under double quotes "=\t= =\n= =\b=".
@@ -165,21 +239,24 @@ $ perldoc -v '$/'
     - use qq{} as an altenative to *""* to prevent escaping repeatedly the double quotes
     - use q{}  as an alternative to *'* to prevent escaping repeatedly the single quote
     - Here docs are available
+** Values (Strings)
+*** Code
 #+begin_src perl
-   my $single_quoted_str = 'To be or not to be.';
-   my $double_quoted_str = "Interpolate a variable: $name.\n"
+   my $single_quoted = 'To be or not to be.';
+   my $double_quoted = "Interpolate $name.\n";
 
-   say $single_quoted_str . $double_quoted_str;
+   say $single_quoted . $double_quoted;
 
-   # see perlop for good examples
-   # ============================
+   # see perlop for good examples of heredocs
+   # ========================================
    my $here_doc_str =<<"END_STRING"
-   This is a list where variables can be interpolated for example
-   the variable \$number has a value of $number
+   This is a list where variables can be
+   interpolated for example the variable
+   \$number has a value of $number
 END_STRING
 #+end_src
 
-*** Numbers 
+** Values (Numbers)
     - Support integers and floating-point values, can be any popular notation
 #+begin_src perl
   my $integer = 5;
@@ -189,23 +266,23 @@ END_STRING
   my $octal = 012;
   my $hex = 0x12;
 #+end_src
-    - Support of *_* as number separator: 1_000_000_000
+    - Support of *_* as number separator: =1_000_000_000=
     - Perl treats everything that looks like a number as a number in numeric context
-
-*** Undef
+** Values (undef)
     - Represents an unassigned, undefined and unknown value
-    - To set a variable to an undefined value: *$var = undef*;
-    - To test for a defined value: *defined $var*;
+    - To set a variable to an undefined value: =$var = undef=;
+    - To test for a defined value: =defined $var=;
 
-*** Lists
-    - *()* Denote a list, in scalar context evaluates to undef
-    - *()* in list context it's an empty list and in lvalue imposes list context
-    - *my $count = () = get_list_of_colors();*
-    - The comma operator *,* creates a list, and it has very low precedence
-    - The range operator also creates lists *..*
+** Values (Lists)
+    - =()= Denote a list, in scalar context evaluates to undef
+    - =()= in list context it's an empty list and in lvalue imposes list context
+    - =my $count = ()= = =get_list_of_colors();=
+    - The comma operator (,) creates a list, and it has very low precedence
+    - The range operator also creates lists (=..=)
+*** Code (re.pl)
 #+begin_src perl
     my @numbers  = (1, 2, 3, 4, 5);
-    my @numbers2 =  1 .. 5;
+    my @numbers2 =)  1 .. 5;
     my @farm   = qw!horse chicken goat pig cow!
     my ($package, $filename, $line) = caller();
 #+end_src
@@ -562,7 +639,7 @@ END_STRING
 *** Cool stuff about references
     - Nested data structures
     - For  more information about Perl data structures use *perldoc perldsc* 
-#+begin_src
+#+begin_src perl
     my %band_members_in = (
         'The Beatles' => {
             'John Lennon'     => [ qw/guitar voice keyboards/ ],
@@ -1351,73 +1428,4 @@ END         { print "3rd END:   done running"    }
 *** JAPH / Obfuscated Perl Contest - https://en.wikipedia.org/wiki/Obfuscated_Perl_Contest
 **** The dromedary
 
-* Beamer Examples
- This slide consists of some text with a number of bullet points:
- #+ATTR_BEAMER: :overlay <+->
- - the first, very *important*, point!
- - the previous point shows the use of the special markup which
-   translates to the Beamer specific /alert/ command for highlighting
-   text.
 
- The above list could be numbered or any other type of list and may
- include sub-lists.
-
-** A more complex slide
-This slide illustrates the use of Beamer blocks.  The following text,
-with its own headline, is displayed in a block:
-*** Org mode increases productivity                               :B_theorem:
-    :PROPERTIES:
-    :BEAMER_env: theorem
-    :END:
-    - org mode means not having to remember LaTeX commands.
-    - it is based on ascii text which is inherently portable.
-    - Emacs!
-
-    \hfill \(\qed\)
-
-** Two columns
-*** A block						      :B_block:BMCOL:
-    :PROPERTIES:
-    :BEAMER_env: block
-    :BEAMER_col: 0.4
-    :END:
-    - this slide consists of two columns
-    - the first (left) column has no heading and consists of text
-    - the second (right) column has an image and is enclosed in an
-      *example* block
-
-*** A screenshot                                            :BMCOL:B_example:
-** Babel
-   :PROPERTIES:
-   :BEAMER_envargs: [t]
-   :END:
-*** Octave code						      :BMCOL:B_block:
-    :PROPERTIES:
-    :BEAMER_col: 0.45
-    :BEAMER_env: block
-    :END:
-#+name: octaveexample
-#+begin_src octave :results output :exports both
-A = [1 2 ; 3 4]
-b = [1; 1];
-x = A\b
-#+end_src
-
-*** The output						      :BMCOL:B_block:
-    :PROPERTIES:
-    :BEAMER_col: 0.4
-    :BEAMER_env: block
-    :BEAMER_envargs: <2->
-    :END:
-#+results: octaveexample
-#+begin_example
-A =
-
-   1   2
-   3   4
-
-x =
-
-  -1
-   1
-#+end_example
