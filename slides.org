@@ -18,111 +18,72 @@
 #+BEAMER_FRAME_LEVEL: 2
 #+BEAMER_THEME: Rochester [height=20pt]
 #+COLUMNS: %40ITEM %10BEAMER_env(Env) %9BEAMER_envargs(Env Args) %4BEAMER_col(Col) %10BEAMER_extra(Extra)
-#+latex_header: \AtBeginSection[]{\begin{frame}<beamer>\frametitle{Topic}\tableofcontents[currentsection]\end{frame}}
+#+LATEX_HEADER: \AtBeginSection[]{\begin{frame}<beamer>\frametitle{Topic}\tableofcontents[currentsection]\end{frame}}
+#+LATEX_HEADER: \RequirePackage{fancyvrb}
+#+LATEX_HEADER: \DefineVerbatimEnvironment{verbatim}{Verbatim}{fontsize=\scriptsize}
 
-* Beamer Examples
- This slide consists of some text with a number of bullet points:
- #+ATTR_BEAMER: :overlay <+->
- - the first, very *important*, point!
- - the previous point shows the use of the special markup which
-   translates to the Beamer specific /alert/ command for highlighting
-   text.
-
- The above list could be numbered or any other type of list and may
- include sub-lists.
-
-** A more complex slide
-This slide illustrates the use of Beamer blocks.  The following text,
-with its own headline, is displayed in a block:
-*** Org mode increases productivity                               :B_theorem:
-    :PROPERTIES:
-    :BEAMER_env: theorem
-    :END:
-    - org mode means not having to remember LaTeX commands.
-    - it is based on ascii text which is inherently portable.
-    - Emacs!
-    \hfill \(\qed\)
-
-** Two columns
-*** A block						      :B_block:BMCOL:
-    :PROPERTIES:
-    :BEAMER_env: block
-    :BEAMER_col: 0.4
-    :END:
-    - this slide consists of two columns
-    - the first (left) column has no heading and consists of text
-    - the second (right) column has an image and is enclosed in an
-      *example* block
-      *example* block
-    \hfill \(\qed\)
-*** A screenshot                                            :BMCOL:B_example:
-** Babel
-   :PROPERTIES:
-   :BEAMER_envargs: [t]
-   :END:
-*** Octave code						      :BMCOL:B_block:
-    :PROPERTIES:
-    :BEAMER_col: 0.45
-    :BEAMER_env: block
-    :END:
-#+name: octaveexample
-#+begin_src octave :results output :exports both
-A = [1 2 ; 3 4]
-b = [1; 1];
-x = A\b
-#+end_src
-*** The output						      :BMCOL:B_block:
-    :PROPERTIES:
-    :BEAMER_col: 0.4
-    :BEAMER_env: block
-    :BEAMER_envargs: <2->
-    :END:
-#+results: octaveexample
-#+begin_example
-A =
-
-   1   2
-   3   4
-
-x =
-
-  -1
-   1
-#+end_example
+* About this presentation
+** About
+#+ATTR_BEAMER: :overlay <+->
+   - Based on the Modern Perl book
+   - Quick introduction of the Perl language
+   - Provide the information to start writing simple code
 * Philosophy
-** Motivation (Pragmatic)
-#+ATTR_BEAMER: :overlay<-+>
-    - It will mold itself to do what you mean.
-    - Because only you know what you need.
-    - Won't enforce programming paradigm
-    - Perl is a language for getting your job done
-** Motivation (Motto)
-#+ATTR_BEAMER: :overlay<-+>
-    - TIMTOWTDI (Tim Toady)
-    - Easy things should be easy and hard things should be possible
-** Motivation (Principles)
-#+ATTR_BEAMER: :overlay<-+>
-    - Things that are different, should look different
-    - Common constructions should be short
-    - Important information should come first
 ** Motivation (virtues of a programmer)
-#+ATTR_BEAMER: :overlay<-+>
+#+ATTR_BEAMER: :overlay <+->
     - Laziness
     - Impatience
     - Hubris
+** Motivation (Pragmatic)
+#+ATTR_BEAMER: :overlay <+->
+    - Perl is a language for getting your job done
+    - It will mold itself to do what you mean.
+    - Won't enforce programming paradigm
+    - ...Because only you know what you need.
+
+** Motivation (Principles)
+#+ATTR_BEAMER: :overlay <+->
+    - Things that are different, should look different
+    - Common constructions should be short
+    - Important information should come first
+** Motivation (Motto)
+#+ATTR_BEAMER: :overlay <+->
+    - TIMTOWTDI (Tim Toady)
+    - Easy things should be easy and hard things should be possible
 ** Baby Perl
-#+ATTR_BEAMER: :overlay<-+>
+#+ATTR_BEAMER: :overlay <+->
   - Analogy when a person starts learning a new spoken language
   - You start by learning a few words, then start building simple sentences
   - Continue with simple conversations
   - Don't need to know a whole language to express ideas and concepts
   - Keep practicing and become a native speaker
+* The community
+** CPAN The Comprehensive Perl Archive Network 
+#+ATTR_BEAMER: :overlay <+->
+    - http://www.cpan.org
+    - http://www.metacpan.org
+    - Tens of thousands of reusable packages
+    - All kinds of problem solvers
+
+** Perl Sites
+#+ATTR_BEAMER: :overlay <+->
+   - Perl's homepage http://www.perl.org
+   - Perl Monks http://perlmonks.org (25 years)
+   - Perl blogs http://blogs.perl.org
+   - Perl Weekly http://perlweekly.com
+   - Perl Buzz   http://perlbuzz.com
+** IRC and Events
+   - Yet Another Perl Conference http://yapc.org
+   - IRC Server: =irc://irc.perl.org=
+   - Channels: #perl-help #perl-qa #perl (also in Freenode)
+
 * First steps
 ** perldoc
-#+ATTR_BEAMER: :overlay<-+>
+#+ATTR_BEAMER: :overlay <+->
   - Documentation written in POD (sometimes embedded to source code)
   - Command line tool to view Perl documentation (language, modules, etc)
   - Example:
+*** Command line
 #+name: perldoc_example
 #+begin_src sh :results output :exports both
 $ perldoc perl
@@ -149,7 +110,7 @@ $ perldoc -v '$/'
    save_amount( scalar build_earnings_report() )
 #+end_src
 ** Context
-*** Type Context (string, numeric, boolean)
+*** Type Context (String, Numeric, Boolean)
     - Defines how Perl interprets a piece of data
     - In numeric context strings that don't look like numbers evaluate to 0
 
@@ -158,20 +119,21 @@ $ perldoc -v '$/'
    my $name = 'Francisco'
 
    say 'Really the same person?'
-     if $name  == 'Frank'; # numeric context
-
+     if $name  == 'Frank';    # numeric context
    say 'Definetly not the same person'
      unless $name eq 'Frank'; # string context
+   say 'He does exist though...'
+     if $name;                # Boolean context
 #+end_src
 
 ** Perl Pronouns: Default Scalar $_ (topic)
-#+ATTR_BEAMER: :overlay<-+>
+#+ATTR_BEAMER: :overlay <+->
    - Most notable in its absence, many builtin operations work on this variable
    - Equivalent to the pronoun /it/
 *** Code
 #+begin_src perl :results output :exports both
-   <$fh>   # read it
-   uc      # Upper case - it
+   <$fh>   # read ...it
+   uc      # Upper case ...it
 #+end_src
 
 ** Perl Pronouns: Default Scalar $_ (topic)
@@ -184,42 +146,22 @@ $ perldoc -v '$/'
 #+end_src
 
 ** Perl Pronouns: Default Arrays
-#+ATTR_BEAMER: :overlay<-+>
+#+ATTR_BEAMER: :overlay <+->
     - @_ is equivalent to the pronoun /they/ and /them/.
     - @ARGV contains the command line arguments to the program.
     - =shift= and =pop= operate on these to variable by default.
     - When operating on an empty filehandle, each element of @ARGV
       will be treated as a file name to open for reading.
 
-* The community
-** CPAN The Comprehensive Perl Archive Network 
-#+ATTR_BEAMER: :overlay<-+>
-    - http://www.cpan.org
-    - http://www.metacpan.org
-    - Tens of thousands of reusable packages
-    - All kinds of problem solvers
-
-** Perl Sites
-#+ATTR_BEAMER: :overlay<-+>
-   - Perl's homepage http://www.perl.org
-   - Perl Monks http://perlmonks.org (25 years)
-   - Perl blogs http://blogs.perl.org
-   - Perl Weekly http://perlweekly.com
-   - Perl Buzz   http://perlbuzz.com
-** IRC and Events
-   - Yet Another Perl Conference http://yapc.org
-   - IRC Server: =irc://irc.perl.org=
-   - Channels: #perl-help #perl-qa #perl (also in Freenode)
-
 * The Perl Language
 ** Names
-#+ATTR_BEAMER: :overlay<-+>
+#+ATTR_BEAMER: :overlay <+->
     - Used for naming everything: functions, variables, packages, etc.
     - Valid names begin with underscore  or a letter
     - Followed by any combination of letters, numbers and underscores
-    - invalid names =invalid name=, =3rdStrike=, =~rare=, =lisp-like-name=
+    - invalid names =`invalid name`=, =3rdStrike=, =~rare=, =lisp-like-name=
 ** Variables (sigils again)
-   - The sigil defines the type of value that a variable can hold
+   - The sigil defines the type of aggregate data structure we're trying to access
    - Governs to manipulate the data of a variable
    - The =$= will access a single element as accessor or as lvalue
       + Of an hash:  =$hash{ $key }=
@@ -233,12 +175,12 @@ $ perldoc -v '$/'
 
 ** Values (Strings)
     - Piece of textual or binary data with no particular formatting, delimited by single or double quotes.
-    - For escaping use backslash *\*.
+    - For escaping use backslash =\=.
     - To use escaped sequence of meta-characters do it under double quotes "=\t= =\n= =\b=".
-    - Concatenate stings with the concatenation operator *.*
-    - use qq{} as an altenative to *""* to prevent escaping repeatedly the double quotes
-    - use q{}  as an alternative to *'* to prevent escaping repeatedly the single quote
-    - Here docs are available
+    - Concatenate stings with the concatenation operator =`.`=
+    - use qq{} as an altenative to ("") to prevent escaping repeatedly the double quotes
+    - use q{}  as an alternative to ('') to prevent escaping repeatedly the single quote
+    - Heredocs are available
 ** Values (Strings)
 *** Code
 #+begin_src perl
@@ -250,7 +192,7 @@ $ perldoc -v '$/'
    # see perlop for good examples of heredocs
    # ========================================
    my $here_doc_str =<<"END_STRING"
-   This is a list where variables can be
+   This is a text where variables can be
    interpolated for example the variable
    \$number has a value of $number
 END_STRING
@@ -282,28 +224,31 @@ END_STRING
 *** Code (re.pl)
 #+begin_src perl
     my @numbers  = (1, 2, 3, 4, 5);
-    my @numbers2 =)  1 .. 5;
+    my @numbers2 =  1 .. 5;
     my @farm   = qw!horse chicken goat pig cow!
     my ($package, $filename, $line) = caller();
 #+end_src
 
 ** Scalars
-#+ATTR_BEAMER: :overlay<->
-   - Fundamental data type: single, discrete value. String, number, fh, etc.
-   - Identified by the *$* sigil
+#+ATTR_BEAMER: :overlay <->
+   - Fundamental data type: single, discrete value. String, number,
+     fh, reference, etc.
+   - Identified by the =$= sigil
    - Any value type can be [re]assigned arbitrarily
    - Contains a numeric slot and a string slot
    - Subject to string interpolation
 ** Arrays
-#+ATTR_BEAMER: :overlay<->
+#+ATTR_BEAMER: :overlay <->
    - Arrays are used to store a collection of scalars
    - Access by index starting on 0
    - Use the scalar sigil to access an individual element
    - They grow or shrink as you manipulate them
-   - Use each to iterate over the array
-   - Slices an be used access multiple elements at the same time
+   - =each= operator can iterate over an array
+   - Slices : access multiple elements at the same time
    - In list context, arrays flatten into lists
    - Array interpolate into strings as the stringification of each element separated by $"
+** Arrays
+*** Code Example for Arrays (re.pl)
 #+begin_src perl
    my @zero_to_nine = 0 .. 9;
 
@@ -314,127 +259,195 @@ END_STRING
    $zero_to_nine[ $#zero_to_nine ]
    $zero_to_nine[ @zero_to_nine-1 ]
    $zero_to_nine[-1]
-
+#+end_src
+** Arrays 
+*** Code Example for Arrays (re.pl)
+#+begin_src perl
    # Arrays in different contexts
-
    # scalar assignment
    $count = @zero_to_nine; 
-   
+
    #scalar string concatenation
    say 'I got ' . @zero_to_nine . ' numbers'; 
 
    #string interpolation
    say "These are my @zero_to_nine numbers";
 
-  #boolean context
-  say 'I do have numbers.' if @zero_to_nine;
-
-  # Slice
-  my @selected_data = @data[ @indexes ];
-
-  # indexes in splices is evaluated in list context
-  @data[ @indexes ] = ($init_value) x @indexes;
+   #boolean context
+   say 'I do have numbers.' if @zero_to_nine;
 #+end_src
-*** Array Operations (destructive) (See examples)
-    - *push*: Add to the end 
-    - *pop*: Pull from the end
-    - *unshift*: Push to the front
-    - *shift*: Pull from the front
-    - *splice*: remove, replaces elements from an array
+
+** Arrays 
+*** Code Example for Arrays (re.pl)
+#+begin_src perl
+   #Slice
+   my @indexes =  (8, 4 .. 6, 2);
+   my @selected_data = @zero_to_nine[ @indexes ];
+
+   # indexes in splices is evaluated in list context
+   @zero_to_nine[ @indexes ] = (0) x @indexes;
+#+end_src
+
+** Array Operations (destructive) (See examples)
+    - =push=: Add to the end 
+    - =pop=: Pull from the end
+    - =unshift=: Push to the front
+    - =shift=: Pull from the front
+    - =splice=: remove, replaces elements from an array
 #+begin_src perl
   # Merge multiple arrays in one push
   push my @pets, @dogs, @cats, @brids;
 #+end_src
 ** Hashes
-#+ATTR_BEAMER: :overlay<->
+#+ATTR_BEAMER: :overlay <->
    - Also known as tables, associative arrays, dictionaries, etc
    - This structure has no order, don't rely on this.
-   - Declare with the (%) sigil
-   - Access a single element with ($) and "{}"
-   - Test key existence with *exists*
-   - Use *keys %hash* to extract a list containing the %key values
-   - Use *values %hash* to extract a list containing the %hash valeus
-   - Iterate over a hash with *each %hash*, it'll return a key/value pair and undef when done
-   - To reset the iterator use either *keys* or *values*
-   - Slices work just like in arrays but using braces *@hash{ @keys }*
-   - To initialize a hash: *my %initialized_hash = map { $_ => 1 } @keys*
+   - Declare with the =%= sigil
+   - Access a single element with =$= and ={}=
+   - Test key existence with =exists=
+   - Use =keys %hash= to extract a list containing the =%key= values
+   - Use =values %hash= to extract a list containing the =%hash= valeus
+** Hashes
+#+ATTR_BEAMER: :overlay <->
+   - Iterate over a hash with =each %hash=, it'll return a key/value pair and undef when done
+   - To reset the iterator use either =keys= or =values=
+   - Slices just like in arrays but using braces
+   - =@hash{ @keys }=
+   - To initialize a hash:
+   - =%initialized_hash = map { $_= => 1 } @keys=
+
+** Hashes Code Example
 #+begin_src perl
-   # initialize a hash
-   my %music_genere_for = ( 'the beatles' => "rock", rush => "progressive" );
+    # initialize a hash
+    my %music_genere_for = ( 
+      # watch for the fat comma '=>'
+      'the beatles' => "rock",
+       rush         => "progressive rock",
+     );
 
-   # access a single element
-   say $music_genere_for{'the beatles'};
+    # access a single element
+    say $music_genere_for{'the beatles'};
 
+    join ', ', keys   %music_genere_for;
+    join ', ', values %music_genere_for;
 #+end_src
-*** Hash idioms
+
+** Hash idioms
 #+begin_src perl
    # To merge two hashes, use slices
-   # you can rely in the order returned by keys and values
+   # you can rely in the order of keys and values
    @hash_1{ keys %hash_2 } = values %hash_2;
 
    # extract uniq values in an array
    my %uniq;
 
-   undef @uniq{ @items }
+   undef @uniq{ @items };
    my @unique_items = keys %uniq;
 #+end_src
-** Scope
-*** Lexical
+** Lexical Scope
     - Lexical scope governed by the syntax of the program usually within ({ and }) or entire files
-    - Declared with *my*
+    - Declared with =my=
     - They are visible in the declaration scope and in any scopes nested within it
     - Not visible in sibiling scopes
-*** Our
+** Lexical Scope (Our)
     - Creates a local alias to a package variable and still enforces lexical scoping of the alias
+*** Lexical Scope (our) Example
 #+begin_src perl
     package Fun::Package {
-      our $fun_our = "howdy our!";
-      say $fun_our;
+      our $fun = "howdy our!";
+      say $fun;
     
       package Fun::Package::Nested {
-        say "This is nested fun $fun_our";
+        say "This is nested fun $fun";
       }
-    };
-    
+    };    
     package Another::Package {
-      say "Another::Package $Fun::Package::fun_our"
+      say "Another::Package $Fun::Package::fun"
     }
-    
     package main;
-    say "From main: ", $Fun::Package::fun_our;
+    say "From main: ", $Fun::Package::fun;
 #+end_src
 
-*** Dynamic
+** Dynamic Scope
     - Also applies to visibility but instead of looking on compile time scopes, lookup through the calls stack
     - Dynamic scope applies only to global and package global variables
-    - While a package global variable may be visible within all scopes, its value may change depending on *local*-ization
+    - While a package global variable may be visible within all scopes, its value may change depending on =local=-ization
+** Dynamic Scope (Example)
+*** Dynamic Scope Example
+    :PROPERTIES:
+    :BEAMER_col: 0.6
+    :BEAMER_env: block
+    :END:
 #+begin_src perl
-    our $scope;
-    
-    sub inner {
-        say $scope;
-    }
-    
-    sub main {
-        say $scope;
-        local $scope = 'main() scope';
-        middle();
-    }
-    
-    sub middle {
-        say $scope;
-        inner();
-    }
-    
-    $scope = 'outer scope';
-    main();
-    say $scope;
+     our $scope;
+     sub inner {
+       say $scope;
+     }
+     sub middle {
+       say $scope;
+       inner();
+     }
+     sub main {
+         say $scope;
+         local $scope = 'main() scope';
+         middle();
+     }
+     $scope = 'outer scope';
+     main();
+     say $scope;
 #+end_src
-*** State
-    - *state* Declares a lexical variable which has a one time initialization
-** Control Flow    
-*** if, unless and ternary conditional
+*** The output						      :BMCOL:B_block:
+    :PROPERTIES:
+    :BEAMER_col: 0.3
+    :BEAMER_env: block
+    :BEAMER_envargs: <2->
+    :END:
+#+results: perlexample
+#+begin_example
+outer scope
+main() scope
+main() scope
+outer scope
+#+end_example
+** Scope (State)
+    - =state= Declares a lexical variable which has a one time initialization
+*** Scope (State) Example
+    :PROPERTIES:
+    :BEAMER_col: 0.6
+    :BEAMER_env: block
+    :END:
+#+begin_src perl
+  use feature qw/state say/
+
+  sub sub_with_state {
+    state $state = 10;
+    return $state++;
+  }
+
+  say sub_with_state for 1 .. 10;
+#+end_src
+*** The output						      :BMCOL:B_block:
+    :PROPERTIES:
+    :BEAMER_col: 0.3
+    :BEAMER_env: block
+    :BEAMER_envargs: <2->
+    :END:
+#+begin_example
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+#+end_example
+
+** Control Flow (Conditionals)
     - The condition is evaluated in boolean context
+*** Conditionals Example
 #+begin_src perl
    # prefix form
    if ($true_val)  {
@@ -452,9 +465,15 @@ END_STRING
    # Ternary conditional operator
    my $time_postfix = after_noot($time) ? 'PM' : 'AM';
 #+end_src
-*** for loops
+** Control flow (Loops: for foreach)
     - The for loop aliases the iterator variable to the values in the iteration
+*** Loops Example (for foreach)
 #+begin_src perl
+    # C style
+    for (my $i = 0; $i <= 10; $i++) {
+       say "$i * $i = ", $i * $i;
+    }
+
     # Prefix notation
     foreach(1 .. 10) {
       say "$_ * $_ = ", $_ * $_;
@@ -467,14 +486,10 @@ END_STRING
     foreach my $num (1 .. 10) {
       say "$num * $num = ", $num * $num;
     }
-
-    # C style
-    for (my $i = 0; $i <= 10; $i++) {
-       say "$i * $i = ", $i * $i;
-    }
 #+end_src
 
-*** While and Until
+** Control flow (Loops: while and until)
+*** Loops Example (while until)
 #+begin_src perl
    # shifting in the control block
    while (@values) { 
@@ -495,7 +510,11 @@ END_STRING
    while (<$fh>) {
        chomp and say;
    }
+#+end_src
 
+** Control flow (Loop control)
+*** Loop Control Example
+#+begin_src perl
    # loop control
    while (<$fh>) {
      next if /\A#/;
@@ -503,7 +522,7 @@ END_STRING
    }
 
    # named loops and continue
-   # SEE EXAMPLESo
+   # SEE EXAMPLES
    LINE:
    while (<$fh>) {
        chomp;
@@ -519,19 +538,23 @@ END_STRING
 #+end_src
 
 ** Coercion Context
+ #+ATTR_BEAMER: :overlay <+->
    - Boolean Coercion
    - String Coercion
    - Numeric Coercion
    - Reference Coercion (Autovivification)
    - Scalar::Util::dualvar to manipulate scalar variable coercion
 ** Packages
+#+ATTR_BEAMER: :overlay <+->
    - Encapsulation of named entities in a single namespace
-   - *package* declares a  package and a namespace
-   - Everything declared within a *package* block refer to symbols in that package's table
-   - The scope of a package continues until the next *package* or until the end of the file
-   - The default package is *main*
-   - A package has a version and three implicit methods: *import*, *unimport*, *VERSION*
+   - =package= declares a  package and a namespace
+   - Everything declared within a =package= block refer to symbols in that package's table
+   - The scope of a package continues until the next =package= or until the end of the file
+   - The default package is =main=
+   - A package has a version and three implicit methods: =import=, =unimport=, =VERSION=
    - Perl has /open namespaces/, you can add definitions at anytime
+** Packages
+*** package Example
 #+begin_src perl
    # new way to version packages
    package Pinball:Wizard v123.45.6 { ... }
@@ -540,11 +563,14 @@ END_STRING
    package Pinball::Wizard { our $VERSION = 123.45.6; ... } 
 #+end_src
 ** References
+#+ATTR_BEAMER: :overlay <+->
    - I does what you expect for references
    - Use the reference operator (\) on a variable to extract its reference
    - References are scalar values
    - To dereference a reference use the corresponding sigil for the referenced variable
    - Another way to dereference use the arrow operator;
+** Scalar References
+*** Scalar Reference
 #+begin_src perl
     my $name = 'Larry';
     my $name_ref = \$name;
@@ -552,8 +578,8 @@ END_STRING
     # to modify the value from the reference
     $$name_ref = 'Moe';
 #+end_src
-*** Array references
-    - To create a new unamed array reference use *[]*
+** ArrayReferences
+*** To create a new unamed array reference use [ ]
 #+begin_src perl
     my @names = qw(Larry Moe Curly);
     my $names_ref = \@names;
@@ -571,13 +597,11 @@ END_STRING
     # create an un-named refernece 
     my $pets_ref = [qw/cat dog bird/];
 #+end_src
-*** Hash references
-    - To create a new unamed hash reference use *{}*
+** Hash References
+*** To create a new unamed hash reference use { }
 #+begin_src perl
     my %spanish_color_for = (
         blue   => 'azul',
-        gold   => 'dorado',
-        red    => 'rojo',
         yellow => 'amarillo',
     );
 
@@ -587,25 +611,24 @@ END_STRING
     my @english_colors = keys   %{ $spanish_color_for_ref };
 
     # Access a single element
-    my $cool_color = $spanish_color_for_ref->{'red'}
-    my $same_cool_color = ${ $spanish_color_for_ref }{'red'}
+    my $cool_color = $spanish_color_for_ref->{'blue'}
+    my $same_cool_color = ${ $spanish_color_for_ref }{'yellow'}
 
     # slice
-    my @colores = @{ $spanish_color_for_ref }{qw/red blue green/}
+    my @colores = @{ $spanish_color_for_ref }{ qw/blue yellow/ }
 
     # create an unnamed reference
     my $spanish_colors_ref = {
         blue   => 'azul',
-        gold   => 'dorado',
-        red    => 'rojo',
         yellow => 'amarillo',
     };   
 #+end_src
 
-*** Function references
+** Function References
     - Functions in perl are data types
-    - To create an unamed function use *sub* without a name
-    - To extract the reference of an existing named function use the *\* followed by the function sigil *&*
+    - To create an unamed function use =sub= without a name
+    - To extract the reference of an existing named function use the =\= followed by the function sigil =&=
+*** Function references
 #+begin_src perl
     # Extract the reference
     sub bake_cake { say 'Baking a wonderful cake!' };
@@ -617,10 +640,10 @@ END_STRING
     # or ...But this is old don't use it
     &$cake_sub_ref; 
 #+end_src
+** Filehandle References
+    - The lexical filehandle form of =open= and =opendir= operate on filehandles references
+    - The references are object of =IO::File=
 *** Filehandle references
-    - The lexical filehandle form of *open* and *opendir* operate on filehandles references
-    - The references are object of *IO::File*
-
 #+begin_src perl
     use autodie 'open';
     open my $out_fh, '>', 'output_file.txt';
@@ -631,14 +654,16 @@ END_STRING
     # ...or
     say $out_fh 'Have some text!'; 
 #+end_src
-*** Reference Count
+** References and Memory Collection
+#+ATTR_BEAMER: :overlay <+->
     - Perl's memory management technique is reference count.
       1. Keeps track of the number of places where a reference is being used
       2. When the count drops to 0, perl knows that it's safe to claim the memory.
 
-*** Cool stuff about references
-    - Nested data structures
-    - For  more information about Perl data structures use *perldoc perldsc* 
+** References
+#+ATTR_BEAMER: :overlay <+->
+    - Nested data structures  =perldoc perldsc=
+*** Reference Example (Autovivification)
 #+begin_src perl
     my %band_members_in = (
         'The Beatles' => {
@@ -659,25 +684,20 @@ END_STRING
             'Enrique Rangel'    => [ qw/bass/] 
         }
     )
-
+#+end_src
+** References
+*** Reference Example Cont...
+#+begin_src perl
    sub john_lennon_played {
        say join( q/, /, @{ $band_members_in{'The Beatles'}->{'John Lennon'} } );
-
-       # ...or
-       local $" = q/, /;
-       say "@{ $band_members_in{'The Beatles'}->{'John Lennon'} }"
    }
 
-  band_member_played(member => 'Mike Watt', band => 'Minutemen');
-
-  sub band_member_played {
+   sub band_member_played {
       my %params = @_;
       my ($band, $member) = @params{qw/band member/};
 
-      if ( $band 
-            && member
-            && exists $band_members_in{$band}->{$member}
-            && defined $band_members_in{$band}->{$member} ) {
+      if ( $band && member
+            && exists $band_members_in{$band}->{$member} {
 
           local $" = q/, /;
           say "@{ $band_members_in{'$band'}{'$member} }"
@@ -686,20 +706,24 @@ END_STRING
       }
   }
 
+  band_member_played(member => 'Mike Watt', band => 'Minutemen');
   # to debug nested data structures you can *use Data::Dumper*
 #+end_src
 ** Operators
+#+ATTR_BEAMER: :overlay <+->
    - Perl, an "operator-oritented language"?
-   - Reference about operators *perldoc perlop* and *perldoc perlsyn*
+   - Reference about operators =perldoc perlop= and =perldoc perlsyn=
    - Important concepts about operators:
-     1. Precedence:    (1 + 5) * 6
-     2. Associativity, whether left to right or right to left:  2 ** 3 ** 4
+     1. Precedence:    (1 + 5) * 6p
+     2. Associativity, whether left to right or right to left:  =2 ** 3 ** 4=
      3. Arity, number of operands on which the operator operates: unary, binary, trinary
      4. fixity, the position relative to its operands
 	1. Infix: $length * $width
-	2. Prefix and postfix: ++$x and $x++
+	2. Prefix and postfix: =++$x and $x++=
 	3. Circumfix: qw[one two three four]
-	4. Postcircumfix: $hash{$x} *{} come after $hash and suround $x*
+	4. Postcircumfix: $hash{$x} *=> {} come after $hash and suround $x*
+** Operators
+#+ATTR_BEAMER: :overlay <+->
    - Operator types
      1. Numeric Operators: +, -, *, /, **, %, +=, --, etc
      2. String Operators:  =~, !~, eq, ne, gt, lt, ge, le, cmp
@@ -708,16 +732,18 @@ END_STRING
      5. Repetition operator: x
      6. Range operator: 1 .. 10, but in boolean context it's the flip flop operator
 ** Functions
-*** Declaration
-    - Use the *sub* builtin followed by a name and a code block
-*** Invoking
+#+ATTR_BEAMER: :overlay <+->
+    - Declaration: Use the =sub= builtin followed by a name and a code block
     - When invoking a function use postcircumfix parentheses (optional most of the times)
     - Arguments can be arbitrary expressions
-*** Parameters
-    - A function receives its parameters in a single array *@_*
-    - You need to unpack the arguments in *@_* for one parameter use *shift*
+** Function Parameters
+#+ATTR_BEAMER: :overlay <+->
+    - A function receives its parameters in a single array =@_=
+    - You need to unpack the arguments in =@_= for one parameter use =shift=
     - Starting on v5.20 signatures are now supported as "Experimental
-    - If you operate directly on the contents of *@_* you're operating directly the calling values
+    - If you operate directly on the contents of =@_= you're operating directly the calling values
+** Function Parameters
+*** Real signatures
 #+begin_src perl
    use experimental 'signatures';
    
@@ -726,16 +752,19 @@ END_STRING
    }
 #+end_src
 
-*** Facts
+** Function Parameters
+#+ATTR_BEAMER: :overlay <+->
     - Every function has a containing namespace
     - A function can be contained in another namespace anywhere in the code
-    - Lexical subs are available starting on v5.18 *perldoc perlsub*
+    - Lexical subs are available starting on v5.18 =perldoc perlsub=
+*** Code
 #+begin_src perl
      sub Some::Package::my_function { ... }
 #+end_src
 
-*** Importing from other packages
-    - When loading a module with *use* perl calls *import()* with any arguments passed to it
+** Importing from other packages
+    - When loading a module with =use= perl calls =import()= with any arguments passed to it
+*** What happens when using 'use'
 #+begin_src perl
     use strict 'refs';         
     use strict qw/subs vars/   
@@ -748,11 +777,14 @@ END_STRING
     }
 #+end_src
 
-*** call stack
-    - *caller* inspect the calling context: *my ($package, $file, $line) = caller()*
-    - *caller(n)* where n is the stack frame if n == 0, then stack from top
-    - *Carp::croack* and *Carp::carp* to report from the caller's point of view
+** call stack
+#+ATTR_BEAMER: :overlay <+->
+    - =caller= inspect the calling context: 
+      + =my ($package, $file, $line) = caller()=
+    - =caller(n)= where n is the stack frame if n == 0, then stack from top
+    - =Carp::croack= and =Carp::carp= to report from the caller's point of view
 ** Closures
+*** Closure Example
 #+begin_src perl
 sub gen_fib {
         my @fibs = (0, 1);
@@ -775,11 +807,13 @@ sub gen_fib {
     say $fib->( 42 );
 #+end_src
 ** AUTOLOAD
+#+ATTR_BEAMER: :overlay <+->
    - This is the default function to call in a package when calling to an non-existing function
    - The arguments passed to the non-existing functions are passed to AUTOLOAD via @_
    - The package global $AUTOLOAD will contain the name of the non-existing function
    - The caller to the non-existing sub will get whatever AUTOLOAD returns
-
+** AUTOLOAD
+*** AUTOLOAD Example
 #+begin_src perl
     sub AUTOLOAD {
         our $AUTOLOAD; 
@@ -796,12 +830,14 @@ sub gen_fib {
 #+end_src
 
 * Regular Expressions
-  - *m//* or the shorter  *//* identifies a regular expression
-  - *=~* is the binding operator, when evaluated in scalar context a
+** Regexp basic operators
+  - =m//= or the shorter  =//= identifies a regular expression
+  - ==~= is the binding operator, when evaluated in scalar context a
     match evaluates to boolean value representing the success or
     failure of the match
-  - *!~* is the negated version of the binding operator
-  - *s////* 
+  - =!~= is the negated version of the binding operator
+  - =s////=
+*** Regexp Examples
 #+begin_src perl
     my $mood = "Because I'm happy";
     say 'I found a happy in string' if $mood =~ /happy/;
@@ -812,6 +848,7 @@ sub gen_fib {
 ** qr// Operator
    - Creates first-class regexes that can be stored in variables
    - can be used to create complex regex patterns
+*** qw// Example
 #+begin_src perl
     my $happy = qr/happy/i;
     my $sad   = qr/sad/i;
@@ -820,45 +857,58 @@ sub gen_fib {
 #+end_src
 
 ** Quantifiers
+#+ATTR_BEAMER: :overlay <+->
    - =?= Matches zero or more preceeding expressions
    - =+= Matches one or more
    - =*= Matches zero or more
    - ={m[,[n]]}= Matches m but not more than n
 
 ** Metacharacters
-   - *.* Match *any* character except a newline
+#+ATTR_BEAMER: :overlay <+->
+   - =.= Match =any= character except a newline
    - =\w= represents all Unicode alphanumeric characters. Negated as: =\W=
    - =\d= Matches a numeric character. Negated as =\D=
    - =\s= Matches whitespace characters (tab, space, CR, LF, newline). Negated as =\S=
    - =\Q\E= Disable metacharacter interpretation =m/\Q$literal_text\E/=
 
 ** Character Classes
-   - *[]* Group alternatives as *[aeiou]* matches any of the vowels or *[A-Za-z0-9]* to match ranges
-   - *[^]* To negate the atoms within the class like *[^aeiou]*
+#+ATTR_BEAMER: :overlay <+->
+   - =[]= Group alternatives as =[aeiou]= matches any of the vowels or =[A-Za-z0-9]= to match ranges
+   - =[^]= To negate the atoms within the class like =[^aeiou]=
 
 ** Anchors
+#+ATTR_BEAMER: :overlay <+->
    - Fixes the position of a regex
    - =\A= start of string
    - =\Z= Match at the end of the string or before newline at the end of the string
    - =\z= end of string
-   - *^* start of a line
-   - *$* end of a line
+   - =^= start of a line
+   - =$= end of a line
    - =\b= boundary between a word character =\w= and a non-word character =\W=
 
 ** Assertions
    - Assertions are zero-width and don't consume characters from the match
-   - *(?=)* Positive look-ahead assertion *$disastrous_feline = qr/cat(?=astrophe)/*
-   - *(?!)* Negative look-ahead assertion *$safe_feline = qr/cat(?!astrophe)/*;
-   - *(?<=)* Positive look-behind assertion
+   - (?=)  Positive look-ahead assertion
+   - (?!)  Negative look-ahead assertion
+   - (?<=) Positive look-behind assertion
+   - =\K=  Variable positive look-behind assertion
+*** Examples
 #+begin_src perl
+    # (?=)
+    $disastrous_feline = qr/cat(?=astrophe)/
+    # (?!)
+    $safe_feline = qr/cat(?!astrophe)/
+    # (?<=)
     $space_cat = qr/(?<=\s)cat/
+    # \K
+    s/foo\Kbar//g   #same as ... s/(foo)bar/$1/g
 #+end_src
-   - =\K= variable positive look-behind assertion. =s/foo\Kbar//g= same as *s/(foo)bar/$1/g*
 
 ** Named Captures
-   - Capture matches for later use using *(?<name>$regex)*
-   - This will create a new entry in the *%+* hash with the key *name* and the matched text as the value
-   - To remove capturing from parentheses use *(?:)*
+   - Capture matches for later use using =(?<name>$regex)=
+   - This will create a new entry in the =%+= hash with the key =name= and the matched text as the value
+   - To remove capturing from parentheses use =(?:)=
+*** Named Captures Example
 #+begin_src perl
    my $contact_info = '(202) 456-1111';
 
@@ -871,14 +921,14 @@ sub gen_fib {
    if ($contact_info =~ /?<phone>$phone_number/) {
        say "You can call this guy at $+{ phone }"
    }
-
    # Also used in substitutions
    my $mood = "I'm feeling happy";
-   $mood =~ s/feeling (?<mood>\w+)/not feeling $+{mood}/;
+   $mood =~ s/feeling\s*(?<mood>\w+)/so, you're $+{mood}/;
 #+end_src
 
 ** Numbered Captures
    - On unamed captures, captures with parentheses with store the matches in variables $1, $2, ...
+*** Numbered Captures Example
 #+begin_src perl
     if ( $contact_info =~ /($phone_number)/ ) {
         say "You can call this guy at $1";
@@ -890,15 +940,17 @@ sub gen_fib {
 #+end_src 
 
 ** Modifiers
-   - Configure the behavior of the regular expression, they can be appear at the end of *m//* or *qr//*
+#+ATTR_BEAMER: :overlay <+->
+   - Configure the behavior of the regular expression, they can be appear at the end of =m//= or =qr//=
    - Or they can appear within the expression
-   - *i* Match ignoring case
-   - *m* Allows the *^* and *$* anchors to match at any newline embedded within the string
-   - *s* Treats the source string as a single line so *.* wll match the newline character
-   - *r* Substitution operation returns the result of the substitution without modifying the source
-   - *x* Allows the regexp to have embedded additional whitespace and comments
-   - *g* matches a regex globally throughout a string
-   - *e* allows to write arbitrary code on the right side of a substitution operation
+   - =i= : Match ignoring case
+   - =m= : Allows the =^= and =$= anchors to match at any newline embedded within the string
+   - =s= : Treats the source string as a single line so =.= wll match the newline character
+   - =r= : Substitution operation returns the result of the substitution without modifying the source
+   - =x= : Allows the regexp to have embedded additional whitespace and comments
+   - =g= : matches a regex globally throughout a string
+   - =e= : allows to write arbitrary code on the right side of a substitution operation
+** Modifiers
 #+begin_src perl
     my $re = qr/text/i
     $re = qr/(?i)text/
@@ -917,9 +969,7 @@ sub gen_fib {
           [;\n\s]*            # spaces and semicolons
           (?:/\*.*?\*/)?      # C comments
         )*
-
         ATTR
-
         \s+
         (   U?INTVAL
           | FLOATVAL
@@ -928,18 +978,21 @@ sub gen_fib {
     }x;
 #+end_src
 
-* Objecs
+* Builtin Object system
 ** Vanilla OO
+#+ATTR_BEAMER: :overlay <+->
    - Perl's core object system is deliberately minimal
    - it only has three rules
      1. A class is a package
      2. A method is a function
      3. A (blessed) reference is an object
-*** bless
+** bless
+#+ATTR_BEAMER: :overlay <+->
     - Associates a reference to a class name
-    - A blessed reference now is a validn invocant and Perl will
+    - A blessed reference now is a valid invocant and Perl will
       perform method dispatch
     - A constructor is the method that creates a blessed reference
+** Basic example
 #+begin_src perl
   package Fish;
   use Carp;
@@ -949,52 +1002,42 @@ sub gen_fib {
 
     croak "This fish needs a name"
       unless exists $fish_attrs{name};
-
     croak "This fish needs a diet"
       unless exists $fish_attrs{name};
-
     $fish_attrs{birth_year} = (localtime)[5] + 1900
       unless exists $fish_attrs{birth_year};
-
     bless \%fish_attrs, $class;
   }
 
   sub diet {
     my ($self, $diet) = @_;
-
-    return $self->{diet}
-      unless $diet;
-
+    return $self->{diet} unless $diet;
     $self->{diet} = $diet;
   }
-
-  sub name {
-    return shift->{name};
-  }
-
-  sub age {
-    return (localtime)[5] + 1900 - shift->{birth_year};
-  }
+  sub name { return shift->{name} }
+  sub age { return (localtime)[5] + 1900 - shift->{birth_year} }
 
   1;
 #+end_src
-*** Classes
-    - They're just packages *package*
-*** Methods
-    - They're just functions *sub*
+** Classes
+    - They're just packages : =package=
+** Methods
+#+ATTR_BEAMER: :overlay <+->
+    - They're just functions =sub=
     - If want to override a parent method just declare the method in
-      the child class using the same name, and call *SUPER::* to
+      the child class using the same name, and call =SUPER::= to
       dispatch the parent
+*** Override Example
 #+begin_src perl
   sub overriden {
     my $self = shift;
     return $self->SUPER::overriden(@_);
   }
 #+end_src
-*** Inheritance
-    - Perl uses a package global variable *@ISA* to keep track of inheritance
-    - The method dispatcher looks in each class's *@ISA* to find the names of its parents
-
+** Inheritance
+    - Perl uses a package global variable =@ISA= to keep track of inheritance
+    - The method dispatcher looks in each class's =@ISA= to find the names of its parents
+*** Inheritance Example
 #+begin_src perl
 package InjuredPlayer {
   @InjuredPlayer::ISA = qw/Player Hospital::Patient/;
@@ -1006,67 +1049,59 @@ package InjuredPlayer {
 }
 #+end_src
 
-**** DOES()
-**** AUTOLOAD()
-**** SUPER()
-
-** Moose
-*** Classes
-    - define classes by naming them with *package* and *use Moose* within the package
-    - define a property with *has* *perldoc Moose::Manual::Attributes*
-    - define a method with *sub*   *perldoc Moose::Manual*
+* Moose
+** Classes
+#+ATTR_BEAMER: :overlay <+->
+    - Define classes by naming them with *package* and *use Moose* within the package
+    - Define a property with *has* =perldoc Moose::Manual::Attributes=
+    - Define a method with *sub* =perldoc Moose::Manual=
+** Moose Class Example
 #+begin_src perl
     package Car {
         use Moose;
-
         # Properties
-        # =
+        # ==========
         has painted_with => (       # paint goodies
             is      => 'ro',
             isa     => 'ArrayRef',
             default => sub { [qw/blue smurfs/] },
             lazy    => 1,
         );
-
         # Methods
-        # =
+        # =======
         sub run {
           my $self = shift;
           $self->turn_on_engine();
           $self->fuel_engine()
         }
     }
-
     # Car class user
      use Car;
      my $flaming_car = Car->new( painted_with => [ qw/flames devils/ ]  );
 
      local $" = ' and ';
      say "This car was painted with @{ $flaming_car->painted_with }";
-
 #+end_src 
-*** Roles
+** Roles
+#+ATTR_BEAMER: :overlay <+->
     - Collection of behaviors and state
     - Can't instantiate a role
-    - Declared with *Moose::Role*
-    - *requires* lists the required methods for its composing clases
-    - *with* composes the Role into a class
-    - *DOES* will tell if the object "does" a role
+    - Declared with =Moose::Role=
+    - =requires= lists the required methods for its composing clases
+    - =with= composes the Role into a class
+    - =DOES= will tell if the object "does" a role
+** Roles Example
 #+begin_src perl
     package LivingBeing {
         use Moose::Role;
-
         requires qw/ name age diet /;
     }
-
     package CalculateAge::From::BirthYear {
         use Moose::Role;
-        
         has 'birth_year',
             is => 'ro',
             isa => 'Int',
             default => sub { (localtime)[5] + 1900 };
-
         sub age {
             my $self = shift;
             my $year = (localtime)[5] + 1900
@@ -1074,88 +1109,126 @@ package InjuredPlayer {
            return $year - $self->birth_year;
         }
     }
-
     package Cat {
         use Moose;
-     
         has 'hame' => ( is => 'ro', isa => 'Str' );
         has 'diet' => ( is => 'rw', isa => 'Str' );
-
         with 'LivingBeing', 'CalculateAge::From::BirthYear';
     }
-
-    my $kitty = Cat->new( 
-        diet => 'fish', 
-        birth_year => 2010,
-        name => 'dude',
-     );
-
-    say $kitty->name, ' is alive!! ' 
-        if $kitty->DOES('LivingBeing');
-
+    my $kitty = Cat->new( diet => 'fish', birth_year => 2010, name => 'dude');
+    say $kitty->name, ' is alive!! ' if $kitty->DOES('LivingBeing');
     say $kitty->name, ' is ', $kitty->age, ' years old.';
 #+end_src
+** Same Example with sugar MooseX::Declare or Moosp
+#+begin_src perl
+use MooseX::Declare;
+role LivingBeing {
+  requires qw/ name age diet /;
+};
 
-*** Inheritance
+role CalculateAge::From::BirthYear {
+  has 'birth_year' => (
+    is      => 'ro',
+    isa     => 'Int',
+    default => sub { (localtime)[5] + 1900 }
+   );
+  method age {
+    my $year = (localtime)[5] + 1900;
+    return $year - $self->birth_year;
+  }
+};
+
+class Cat with LivingBeing with CalculateAge::From::BirthYear {
+    has 'hame' => ( is => 'ro', isa => 'Str' );
+    has 'diet' => ( is => 'rw', isa => 'Str' );
+};
+my $kitty = Cat->new( diet => 'fish', birth_year => 2010, name => 'dude');
+say "$kitty->name is alive!! " if $kitty->DOES('LivingBeing');
+say "$kitty->name is $kitty->age years old.";
+#+end_src
+
+** Inheritance
+#+ATTR_BEAMER: :overlay <+->
     - Use a inheritance when one class truly extends another
-    - Use a role when a class needs additional behavior, espacially when that behavior has a meaningful name
-    - Inherit from an existing class by using *extends*, it takes a list of parent classes
-    - use *+* to indicate that an attribute is modifying the attribute
-    - To override a method use *override*
-    - *isa* will tell if the invocant extends a named class
+    - Use a role when a class needs additional behavior, espacially
+      when that behavior has a meaningful name
+    - Inherit from an existing class by using =extends=, it takes a list of parent classes
+    - use =+= to indicate that an attribute is modifying the attribute
+    - To override a method use =override=
+    - =isa= will tell if the invocant extends a named class
+** Inheritance Example
 #+begin_src perl
   package LightSource {
     use Moose;
+    has 'candle_power' => (
+      is      =>'ro',
+      isa     =>'Int',
+      default => 1
+     );
 
-    has 'candle_power',
-      is      => 'ro',
-      isa     => 'Int',
-      default => 1;
-
-    has 'enabled'
+    has 'enabled' => (
       is      => 'ro',
       isa     => 'Bool',
       default => 0,
-      writer  => '_set_enabled';
+      writer  => '_set_enabled'
+     );
 
     sub light {
-      my $self = shift;
-      $self->_set_enabled(1);
+      my $self = shift; $self->_set_enabled(1);
     }
 
     sub extinguish {
-      my $self = shift;
-      $self->_set_enabled(0);
+      my $self = shift; $self->_set_enabled(0);
     }
   };
+#+end_src
 
+** Inheritance Example
+#+begin_src perl
   package SuperCandle {
-    use Moose; extends 'LightSource';
-
-    has '+candle_power', default => 100;
-  }
-
-  package LigthSource::Cranky {
-    use Carp 'carp';
     use Moose;
+    extends 'LightSource';
 
-    extends 'LigthSource';
-
-    overide light => sub {
-      my $self = shift;
-      carp "Can't light a lit LightSource!" if $self->enabled;
-      super();
-    };
-
-    override extinguish => sub {
-      my $self = shift;
-      carp "Can't extinguish unlit LightSource!" unless $self->enabled;
-      super();
-     };
+    has '+candle_power' => ( default => 100 );
   }
 #+end_src
-*** Metaprogramming and Reflection
-    - Inspect a class via *meta*
+
+** Inheritance Exmple
+#+begin_src perl
+    package LigthSource::Cranky {
+      use Carp 'carp';
+      use Moose;
+      extends 'LigthSource';
+
+      overide light => sub {
+        my $self = shift;
+
+        carp "Can't light a lit LightSource!" 
+          if $self->enabled;
+
+        super();
+      };
+
+      override extinguish => sub {
+        my $self = shift;
+
+        carp "Can't extinguish unlit LightSource!"
+          unless $self->enabled;
+
+        super();
+       };
+    }
+#+end_src
+** Metaprogramming and Reflection
+#+ATTR_BEAMER: :overlay <+->
+    - Inspect a class via =meta=
+    - Once a module has been loaded, it's registered in =%INC=
+    - =Class::Load= does the task of properly checking this
+    - To check if a package exists ask =UNIVERSAL= =$pkg->can('can')=
+    - To check the version of a module =$module->VERSION()=
+    - To check if a function exists in a package =$pkg->can( $func )=
+
+** meta Example
 #+begin_src perl
   my $meta = LightSource->meta;
 
@@ -1165,42 +1238,37 @@ package InjuredPlayer {
   say 'LightSource instances support the methods:';
   say $_->fully_qualified_name for $meta->get_all_methods;
 #+end_src
-    - Once a module has been loaded, it's registered in *%INC*
-    - *Class::Load* does the task of properly checking this
-    - To check if a package exists ask *UNIVERSAL* *$pkg->can('can')*
-    - To check the version of a module *$module->VERSION()*
-    - To check if a function exists in a package *$pkg->can( $func )*
-    - 
 
-*** Moose::Manual
+** Moose::Manual
+*** Manual
     - Look at the manual for tons of interesting features
+    - https://metacpan.org/pod/Moose::Manual
 ** UNIVERSAL
-   - The *UNIVERSAL* package is the ancestor of all other packages, the ultimate parent
-   - provides the following methods
+#+ATTR_BEAMER: :overlay <+->
+   - The =UNIVERSAL= package is the ancestor of all other packages, the ultimate parent
+   - Provides the following methods:
      1. VERSION() - Returns the value of the $VERSION package global
      2. DOES() - Supports the use of Roles in programs
      3. can() - Returns the function reference if it's supported
      4. isa() - Returns true if its invocant derives from the named class
 * Misc
 ** Files
-   - Perl offers a Unix style view of the filesystem. Use *File::Spec*
+#+ATTR_BEAMER: :overlay <+->
+   - Perl offers a Unix style view of the filesystem. Use =File::Spec=
      to protably manipulate file paths
-   - Another option for this task *Path::Class*
-   - *-X* test operators
-     + *-e* File exists
-     + *-f* File is a plain file
-     + *-d* File is a directory
-     + *-r* File allows read
-     + *-s* File is Non-empty
-     + *perldoc -f -X* for more tests
-** Idioms
-   - We reviewed different idioms when looking at arrays and hashes.
-*** Schwartzian Transform
-   - The *Schwartzian Transform* list handling idiom borrowed from Lisp
+   - Another option for this task =Path::Class=
+   - =-X= test operators
+     + =-e= : File exists
+     + =-f= : File is a plain file
+     + =-d= : File is a directory
+     + =-r= : File allows read
+     + =-s= : File is Non-empty
+     + =perldoc -f -X= for more tests
+** Idioms: Schwartzian Transform
+*** Idiom borrowed from Lisp
 #+begin_src perl
   # Associate the names of workers and phone extensions
-
-  # Problem make a phone book, sorted by name;
+  # PROBLEM: write a phone book, sorted by name;
 
   my %extensions = (
     '000' => 'Freddie',
@@ -1208,8 +1276,7 @@ package InjuredPlayer {
     '042' => 'John',
     '044' => 'Roger',
    );
-
-  # sort list by name alphabetically, need to sort by values
+  # sort list by name alphabetically, need to sort by values?
   my @sorted_names = sort values %extensions;
 
   # map/transform data to preserve key/value information
@@ -1223,15 +1290,20 @@ package InjuredPlayer {
 
   # print data
   say for @formatted_exts;
+#+end_src
 
+** Idioms: Schwartzian Transform
+*** Schwartzian Transform cont...
+#+begin_src perl
   # Schwartzian Transform chain all the previous steps
   say for
     map  { "$_->[1], ext. $_->[0]" }
     sort { $a->[1] cmp $b->[1] }
-    map  { [ $_ => $extensions{$_} ] }
+    map  { [ $_ => $extensions{ $_ } ] }
     keys %extensions;
 #+end_src
-*** File Slurping
+** Idioms: File Slurping
+*** File Slurp
 #+begin_src perl
   my $file = do { local $/; <$fh> };
 
@@ -1239,12 +1311,14 @@ package InjuredPlayer {
   my $file; { local $/; $file = <$fh> };
 
   # .. or
-  use File::Slurper; my $content = read_text($filename);)
+  use File::Slurper;
+  my $content = read_text($filename);)
 #+end_src
-** Exceptions
-   - To throw an exception, use *die* or *croak*
+** Throw/catch Exceptions
+   - To throw an exception, use =die= or =croak=
    - To catch an exception, evaluate the code that can throw the
-     exception withing an eval block, inspect the exception using *$@*
+     exception withing an eval block, inspect the exception using =$@=
+*** Throw/catch Example
 #+begin_src perl
   local $@;
 
@@ -1259,50 +1333,57 @@ package InjuredPlayer {
   }
 #+end_src
 ** Pragmas
+#+ATTR_BEAMER: :overlay <+->
    - Perl modules that influence the behavior of the language
    - By convension, pragma names are written in lower case
    - Using a pragma makes its behavior effective within a lexical scope
    - To disable pragmas, it can be done in a lexical scpoe as well with *no*
    - Some useful pragmas:
-     1. strict   *Always use*
-     2. warnings *Always use*
-     3. utf8
-     4. autodie
-     5. constant
-     6. vars
-     7. feature *use 5.18* or *use feature ':5.18'*
-     8. experimental
-     9. less - Write your own lexical pragmas *perldoc perlpragma*
-#+begin_src perl
-use strict;
-{
-  no strict 'refs';
-}
-#+end_src
+     1. =strict=   *Always use*
+     2. =warnings= *Always use*
+     3. =utf8=
+     4. =autodie=
+     5. =constant=
+     6. =vars=
+     7. =feature= *use 5.18* or *use feature ':5.18'*
+     8. =experimental=
+     9. =less= - Write your own lexical pragmas =perldoc perlpragma=
 ** Taint Mode
+#+ATTR_BEAMER: :overlay <+->
    - Sticky piece of metadata attached to all data which comes from the outside
-   - Any data derived from tainted data is also tainted *perldoc perlsec*
-   - Launch your program with the *-T* command line argument to enable tainted mode
-   - *Scalar::Util::tainted()* returns true if its argument is tainted
+   - Any data derived from tainted data is also tainted =perldoc perlsec=
+   - Launch your program with the =-T= command line argument to enable tainted mode
+   - =Scalar::Util::tainted()= returns true if its argument is tainted
    - To remove tain from data, extract known-good portions of the data
      with a regular expression capture
-   - *-t* flag enables taiin mode but reduces tain violations from
+   - =-t= flag enables taiin mode but reduces tain violations from
      excemptions to warnings
+** Taint mode example
 #+begin_src perl
-  die 'Number still tainted!' unless $number =~ /(\(/d{3}\) \d{3}-\d{4})/;
-  my $safe_number = $1;
+    # start code as $ perl -T tainted.pl
+
+    # tainted.pl
+    # ==========
+    my $number = <>;
+
+    die 'Number still tainted!' 
+      unless $number =~ /(\(/d{3}\) \d{3}-\d{4})/;
+
+    my $safe_number = $1;
 #+end_src
 ** One liners 
-   - http://www.catonmat.net/download/perl1line.txt
+   =http://www.catonmat.net/download/perl1line.txt=
 * Testing
 ** Test::More
-   - *ok()* The most basic assertion test function, takes two values
-   - *is()* Compares two values using Perl's eq operator. Aplies scalar context/
-   - *isnt()* Compares two values using ne
-   - *cmp_ok()* You can provide the comparision operator
-   - *isa_ok()* Tests if a reference is of any type
-   - *can_ok()* Tests if an object provides functionality
-   - *is_deeply()* Compares two references to ensure their contents are equal
+#+ATTR_BEAMER: :overlay <+->
+   - =ok()= The most basic assertion test function, takes two values
+   - =is()= Compares two values using Perl's eq operator. Aplies scalar context/
+   - =isnt()= Compares two values using ne
+   - =cmp_ok()= You can provide the comparision operator
+   - =isa_ok()= Tests if a reference is of any type
+   - =can_ok()= Tests if an object provides functionality
+   - =is_deeply()= Compares two references to ensure their contents are equal
+** Test::More Example
 #+begin_src perl
   Use Test::More tests => 1;  # Test plan
   ok  1, 'the number one is a true value';
@@ -1310,34 +1391,39 @@ use strict;
   done_testing();
 #+end_src 
 ** Test Anything Protocol
+#+ATTR_BEAMER: :overlay <+->
    - The output from the tests are formatted in /Test Anything Protocol (TAP)/
    - http://testanything.org
 ** Running Tests
-   - The program *prove* runs tests, interprets TAP and display relevant information
-   - See *perldoc prove* for more options 
+#+ATTR_BEAMER: :overlay <+->
+   - The program =prove= runs tests, interprets TAP and display relevant information
+   - See =perldoc prove= for more options 
 ** Organizing tests
-   - CPAN distributions should include a *t/* directory containing test files *.t*
+#+ATTR_BEAMER: :overlay <+->
+   - CPAN distributions should include a =t/= directory containing test files =.t=
    - When building a distribution, the testing step runs all the tests
    - Two common organization of tests are used:
-     1. Each *.t* file corresponds to a *.pm* file
-     2. Each *.t* file corresponds to a logical feature
+     1. Each =.t= file corresponds to a =.pm= file
+     2. Each =.t= file corresponds to a logical feature
    - Hundered of testing modules available
 * Modules
-  - Package contained in its own file and loadable with *use* or *require*
-  - A module must be valid perl codd
+** Modules
+#+ATTR_BEAMER: :overlay <+->
+  - Package contained in its own file and loadable with =use= or =require=
+  - A module must be valid perl code
   - It must end with an expression that evaluates to true, so the
     parser knows that it has loaded successfully
-  - When loading a module, Perl splits the pacakge name on (::) and
+  - When loading a module, Perl splits the pacakge name on =::= and
     turns the components of the package name into a file path.
-  - The search is made in every directory in *@INC*
+  - The search is made in every directory in =@INC=
 ** Using and Importing
    - With *use* perl loads a module from disk and calls *import* with any arguments provided
    - The *no* builtin calls a module's *unimport* passing any arguments
    - The call to *import* and *unimport* happens during compilation
 ** Exporting
-   - The module *Exporter* is the standard way to export symbols from a module
-   - Relies on the presence of *@EXPORT_OK* and *@EXPORT*
-
+   - The module =Exporter= is the standard way to export symbols from a module
+   - Relies on the presence of =@EXPORT_OK= and =@EXPORT=
+*** Export example
 #+begin_src perl
   package StrangeMonkey::Utilities;
   use Exporter 'import';
@@ -1348,46 +1434,83 @@ use strict;
   # Will export these symbols by defaul
   our @EXPORT = qw/dance sleep $variable/;
 
-  # Then on client code ...
-  use StrangeMonkey::Utilities qw/round sleep/;  # will import round and sleep
+  # Then on client code ...will import round and sleep
+  use StrangeMonkey::Utilities qw/round sleep/;  
 #+end_src
 
 * Distributions
+** Distributions
+#+ATTR_BEAMER: :overlay <+->
   - Collection of metadata and modules into a single, redistributable and installable unit
   - The easiest way to configure, build, package, test and install
     Perl code is to follow the CPAN's conventions
   - A distribution built on these standards can be tested on several
     versions of Perl on several different hardware platforms
 ** Attributes of a Distribution
-#+ATTR_BEAMER: :overlay<-+>
-  - *Build.PL* or *Makefile.PL* - Drives the configuration, build, test, bundle and install
-  - *MANIFEST* - List of all files contained in the distribution
-  - *META.yml* or *META.json* - Metadata about the distribution and dependencies
-  - *README* - Description of the distribution, copyright and licensing information
-  - *lib/* - Directory containing Perl modules
-  - *t/* - Directory containing test files
-  - *Changes* - Text Log of every significant change to the distribution
+#+ATTR_BEAMER: :overlay <+->
+  - =Build.PL= or =Makefile.PL= : Drives configuration, build, test, bundle and install
+  - =MANIFEST= : List of all files contained in the distribution
+  - =META.yml= or =META.json= : Metadata about the distribution and dependencies
+  - =README= : Description of the distribution, copyright and licensing information
+  - =lib/= : Directory containing Perl modules
+  - =t/= : Directory containing test files
+  - =Changes= : Text Log of every significant change to the distribution
 
 ** CPAN Tools for managing distributions 
-#+ATTR_BEAMER: :overlay<-+>
-  - *CPANTS* http://cpants.perl.org evaluates each uploaded
+#+ATTR_BEAMER: :overlay <+->
+  - =CPANTS= =http://cpants.perl.org= evaluates each uploaded
     distribution against packaging guidelines
-  - *CPAN.pm* officieal CPAN client
-  - *ExtUtils::MakeMaker* Package, build, test and install Perl
-    distributions works with *Makefile.PL*
-  - *App::cpanminus* configuration-free CPAN client
-  - *App::perlbrew* helps you to manage multiple installations of Perl.
-  - *CPAN::Mini* Allows to create a private mirror of teh public CPAN
-  - *Dist::Zilla* Automatest away common distribution tasks
-  - *Carton and Pinto* Manage and install code's dependencies
-  - *Module::Build* alternative for *ExtUtils::MakeMaker* written in pure Perl
+  - =CPAN.pm= official CPAN client
+  - =ExtUtils::MakeMaker= Package, build, test and install Perl
+    distributions works with =Makefile.PL=
+  - =App::cpanminus= configuration-free CPAN client
+  - =App::perlbrew= helps you to manage multiple installations of Perl.
+  - =CPAN::Mini= Allows to create a private mirror of teh public CPAN
+  - =Dist::Zilla= Automatest away common distribution tasks
+  - =Carton and Pinto= Manage and install code's dependencies
+  - =Module::Build= alternative for =ExtUtils::MakeMaker= written in pure Perl
 
 * Good readings
 ** Camel book - http://shop.oreilly.com/product/9780596000271.do
+*** Camel book
+    :PROPERTIES:
+    :BEAMER_col: 0.6
+    :END:
+    #+ATTR_LATEX: width=\textwidth
+    file:img/camel.png
+
 ** Modern Perl - http://modernperlbooks.com/books/modern_perl_2016/index.html
+*** Modern Perl
+    :PROPERTIES:
+    :BEAMER_col: 0.6
+    :END:
+    #+ATTR_LATEX: width=\textwidth
+    file:img/modern.jpg
+
 ** Perl Best Practices - http://shop.oreilly.com/product/9780596001735.do
+*** Perl Best Practices
+    :PROPERTIES:
+    :BEAMER_col: 0.6
+    :END:
+    #+ATTR_LATEX: width=\textwidth
+    file:img/pbp.jpg
+
 ** Higher Order Perl - http://hop.perl.plover.com/
+*** Higher Order Perl
+    :PROPERTIES:
+    :BEAMER_col: 0.6
+    :END:
+    #+ATTR_LATEX: width=\textwidth
+    file:img/hop.jpg
+
 ** Mastering Algorithms with Perl - http://shop.oreilly.com/product/9781565923980.do
+*** Mastering Algorithms
+    :PROPERTIES:
+    :BEAMER_col: 0.6
+    :END:
+    #+ATTR_LATEX: width=\textwidth
+    file:img/mastering.jpg
+
 * Projects
 ** Database
 *** DBI - http://dbi.perl.org/
@@ -1423,9 +1546,10 @@ CHECK       { print "2nd CHECK: done compiling"  }
 END         { print "3rd END:   done running"    }
 #+end_src
 
-* -Ofun
-*** Acme namespace -  https://metacpan.org/search?size=20&q=Acme
-*** JAPH / Obfuscated Perl Contest - https://en.wikipedia.org/wiki/Obfuscated_Perl_Contest
+* Perl is Optimized for fun
+** -Ofun
+*** Acme namespace 
+    =https://metacpan.org/search?size=20&q=Acme=
+*** JAPH / Obfuscated Perl Contest  
+    =https://en.wikipedia.org/wiki/Obfuscated_Perl_Contest=
 **** The dromedary
-
-
