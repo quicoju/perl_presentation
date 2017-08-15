@@ -625,7 +625,6 @@ outer scope
         blue   => 'azul',
         yellow => 'amarillo',
     );
-
     # Extract reference, keys and vlues
     my $spanish_color_for_ref = \%spanish_color_for;
     my @spanish_colors = values %{ $spanish_color_for_ref };
@@ -653,13 +652,16 @@ outer scope
 #+begin_src perl
     # Extract the reference
     sub bake_cake { say 'Baking a wonderful cake!' };
-    my $cake_sub_ref = \%bake_cake;
+    my $cake_sub_ref = \&bake_cake;
 
     # Call the function from the reference
     $cake_sub_ref->();
     
     # or ...But this is old don't use it
     &$cake_sub_ref; 
+
+    # or ...create an unnamed function
+    my $cake_sub_ref_2 = sub { say 'Baking a wonderful cake2!' };
 #+end_src
 ** Filehandle References
     - The lexical filehandle form of =open= and =opendir= operate on filehandles references
@@ -714,7 +716,7 @@ outer scope
 
    sub band_member_played {
       my %params = @_;
-      my ($band, $member) = @params{qw/band member/};
+      my ($band, $member) = @params{ qw/band member/ };
 
       if ( $band && member
             && exists $band_members_in{$band}->{$member} {
@@ -906,7 +908,6 @@ sub gen_fib {
    - =\b= boundary between a word character =\w= and a non-word character =\W=
 
 ** Assertions
-#+ATTR_BEAMER: :overlay <+->
    - Assertions are zero-width and don't consume characters from the match
    - (?=)  Positive look-ahead assertion
    - (?!)  Negative look-ahead assertion
@@ -1042,7 +1043,6 @@ sub gen_fib {
 ** Classes
     - They're just packages : =package=
 ** Methods
-#+ATTR_BEAMER: :overlay <+->
     - They're just functions =sub=
     - If want to override a parent method just declare the method in
       the child class using the same name, and call =SUPER::= to
@@ -1080,7 +1080,6 @@ package InjuredPlayer {
     package Car {
         use Moose;
         # Properties
-        # ==========
         has painted_with => (       # paint goodies
             is      => 'ro',
             isa     => 'ArrayRef',
@@ -1088,7 +1087,6 @@ package InjuredPlayer {
             lazy    => 1,
         );
         # Methods
-        # =======
         sub run {
           my $self = shift;
           $self->turn_on_engine();
@@ -1145,7 +1143,6 @@ use MooseX::Declare;
 role LivingBeing {
   requires qw/ name age diet /;
 };
-
 role CalculateAge::From::BirthYear {
   has 'birth_year' => (
     is      => 'ro',
@@ -1157,7 +1154,6 @@ role CalculateAge::From::BirthYear {
     return $year - $self->birth_year;
   }
 };
-
 class Cat with LivingBeing with CalculateAge::From::BirthYear {
     has 'hame' => ( is => 'ro', isa => 'Str' );
     has 'diet' => ( is => 'rw', isa => 'Str' );
@@ -1573,6 +1569,6 @@ END         { print "3rd END:   done running"    }
 *** JAPH / Obfuscated Perl Contest  
     =https://en.wikipedia.org/wiki/Obfuscated_Perl_Contest=
 **** The dromedary
-* =__END__=
 ** =__END__=
-   ==__END__==
+*** Q/A
+   =__END__=
