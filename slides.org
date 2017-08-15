@@ -230,7 +230,7 @@ END_STRING
 #+end_src
 
 ** Scalars
-#+ATTR_BEAMER: :overlay <->
+#+ATTR_BEAMER: :overlay <+->
    - Fundamental data type: single, discrete value. String, number,
      fh, reference, etc.
    - Identified by the =$= sigil
@@ -238,7 +238,7 @@ END_STRING
    - Contains a numeric slot and a string slot
    - Subject to string interpolation
 ** Arrays
-#+ATTR_BEAMER: :overlay <->
+#+ATTR_BEAMER: :overlay <+->
    - Arrays are used to store a collection of scalars
    - Access by index starting on 0
    - Use the scalar sigil to access an individual element
@@ -299,7 +299,7 @@ END_STRING
   push my @pets, @dogs, @cats, @brids;
 #+end_src
 ** Hashes
-#+ATTR_BEAMER: :overlay <->
+#+ATTR_BEAMER: :overlay <+->
    - Also known as tables, associative arrays, dictionaries, etc
    - This structure has no order, don't rely on this.
    - Declare with the =%= sigil
@@ -308,7 +308,7 @@ END_STRING
    - Use =keys %hash= to extract a list containing the =%key= values
    - Use =values %hash= to extract a list containing the =%hash= valeus
 ** Hashes
-#+ATTR_BEAMER: :overlay <->
+#+ATTR_BEAMER: :overlay <+->
    - Iterate over a hash with =each %hash=, it'll return a key/value pair and undef when done
    - To reset the iterator use either =keys= or =values=
    - Slices just like in arrays but using braces
