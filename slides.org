@@ -1,8 +1,8 @@
-#+TITLE:     Quick Perl Intro
+#+TITLE:     Quick? Perl Intro
 #+AUTHOR:    Francisco Jurado
 #+EMAIL:     francisco.jurado@gmail.com
-#+DATE:      2017-06-08 Thu
-#+DESCRIPTION: Quick introduction of the Perl programming language
+#+DATE:      2017/08/15
+#+DESCRIPTION: Quick? introduction of the Perl programming language
 #+KEYWORDS: Perl, programming
 #+LANGUAGE:  en
 #+OPTIONS:   H:2 num:t toc:t \n:nil @:t ::t |:t ^:t -:t f:t *:t <:t
@@ -77,9 +77,24 @@
    - IRC Server: =irc://irc.perl.org=
    - Channels: #perl-help #perl-qa #perl (also in Freenode)
 
+* Where to get it
+** Download and Install
+*** Unix
+    Installed in most Unix Systems
+*** Windows
+    Strawberry Perl =http://strawberryperl.com/=
+** App::cpanminus
+*** Unix
+    curl -L https://cpanmin.us | perl - App::cpanminus
+*** Windows
+    cpan App::cpanminus
+    # ... or download from https://cpanmin.us/ and put it in path
+** Devel::REPL
+   - Nice to have for this presentation
+*** Install with cpanm (see previous slide)
+   cpanm Devel::REPL
 * First steps
 ** perldoc
-#+ATTR_BEAMER: :overlay <+->
   - Documentation written in POD (sometimes embedded to source code)
   - Command line tool to view Perl documentation (language, modules, etc)
   - Example:
@@ -94,13 +109,14 @@ $ perldoc -v '$/'
 #+end_src
 
 ** Built-in Data Structures (sigils)
+#+ATTR_BEAMER: :overlay <+->
    - Scalars variables =($)=
    - Array variables =(@)=
    - Hash variables =(%)=
    - They allow to separate variables into different namespaces: =$name, @name, %name=
 ** Context
-*** Amount Context (void, scalar, list)
   - Governs how many items you expect from an operation
+*** Amount Context (void, scalar, list)
 #+begin_src perl
    build_sales_report();                    # void
    my $earnings  = build_earnings_report(); # scalar
@@ -109,11 +125,9 @@ $ perldoc -v '$/'
    process( build_earnings_report() );      # list
    save_amount( scalar build_earnings_report() )
 #+end_src
-** Context
-*** Type Context (String, Numeric, Boolean)
+** Type Context (String, Numeric, Boolean)
     - Defines how Perl interprets a piece of data
     - In numeric context strings that don't look like numbers evaluate to 0
-
 *** Example
 #+begin_src perl :results output :exports both
    my $name = 'Francisco'
@@ -127,7 +141,6 @@ $ perldoc -v '$/'
 #+end_src
 
 ** Perl Pronouns: Default Scalar $_ (topic)
-#+ATTR_BEAMER: :overlay <+->
    - Most notable in its absence, many builtin operations work on this variable
    - Equivalent to the pronoun /it/
 *** Code
@@ -161,12 +174,14 @@ $ perldoc -v '$/'
     - Followed by any combination of letters, numbers and underscores
     - invalid names =`invalid name`=, =3rdStrike=, =~rare=, =lisp-like-name=
 ** Variables (sigils again)
+#+ATTR_BEAMER: :overlay <+->
    - The sigil defines the type of aggregate data structure we're trying to access
    - Governs to manipulate the data of a variable
    - The =$= will access a single element as accessor or as lvalue
       + Of an hash:  =$hash{ $key }=
       + Of an array: =$array[ $index ]= 
 ** Namespaces
+#+ATTR_BEAMER: :overlay <+->
     - Namespace is a collection of symbols grouped under a globally unique name
     - Multi-level namespaces are allowed by joining names with =::= like in =Modern::Perl=
     - Within the namespace the only symbol name can be used
@@ -174,6 +189,7 @@ $ perldoc -v '$/'
     - The default namespace is main
 
 ** Values (Strings)
+#+ATTR_BEAMER: :overlay <+->
     - Piece of textual or binary data with no particular formatting, delimited by single or double quotes.
     - For escaping use backslash =\=.
     - To use escaped sequence of meta-characters do it under double quotes "=\t= =\n= =\b=".
@@ -200,6 +216,9 @@ END_STRING
 
 ** Values (Numbers)
     - Support integers and floating-point values, can be any popular notation
+    - Support of *_* as number separator: =1_000_000_000=
+    - Perl treats everything that looks like a number as a number in numeric context
+*** Numbers in Perl
 #+begin_src perl
   my $integer = 5;
   my $float = 0.01;
@@ -208,9 +227,8 @@ END_STRING
   my $octal = 012;
   my $hex = 0x12;
 #+end_src
-    - Support of *_* as number separator: =1_000_000_000=
-    - Perl treats everything that looks like a number as a number in numeric context
 ** Values (undef)
+#+ATTR_BEAMER: :overlay <+->
     - Represents an unassigned, undefined and unknown value
     - To set a variable to an undefined value: =$var = undef=;
     - To test for a defined value: =defined $var=;
@@ -294,6 +312,7 @@ END_STRING
     - =unshift=: Push to the front
     - =shift=: Pull from the front
     - =splice=: remove, replaces elements from an array
+*** Push Example
 #+begin_src perl
   # Merge multiple arrays in one push
   push my @pets, @dogs, @cats, @brids;
@@ -345,6 +364,7 @@ END_STRING
    my @unique_items = keys %uniq;
 #+end_src
 ** Lexical Scope
+#+ATTR_BEAMER: :overlay <+->
     - Lexical scope governed by the syntax of the program usually within ({ and }) or entire files
     - Declared with =my=
     - They are visible in the declaration scope and in any scopes nested within it
@@ -369,6 +389,7 @@ END_STRING
 #+end_src
 
 ** Dynamic Scope
+#+ATTR_BEAMER: :overlay <+->
     - Also applies to visibility but instead of looking on compile time scopes, lookup through the calls stack
     - Dynamic scope applies only to global and package global variables
     - While a package global variable may be visible within all scopes, its value may change depending on =local=-ization
@@ -661,7 +682,6 @@ outer scope
       2. When the count drops to 0, perl knows that it's safe to claim the memory.
 
 ** References
-#+ATTR_BEAMER: :overlay <+->
     - Nested data structures  =perldoc perldsc=
 *** Reference Example (Autovivification)
 #+begin_src perl
@@ -709,26 +729,26 @@ outer scope
   band_member_played(member => 'Mike Watt', band => 'Minutemen');
   # to debug nested data structures you can *use Data::Dumper*
 #+end_src
-** Operators
+** Operators "Perl an Operator-oriented language"
 #+ATTR_BEAMER: :overlay <+->
-   - Perl, an "operator-oritented language"?
    - Reference about operators =perldoc perlop= and =perldoc perlsyn=
-   - Important concepts about operators:
-     1. Precedence:    (1 + 5) * 6p
-     2. Associativity, whether left to right or right to left:  =2 ** 3 ** 4=
+   - Definitions about operators:
+     1. Precedence:    =(1 + 5) * 6p=
+     2. Associativity, whether left to right or right to left:  
+        - =2 ** 3 ** 4=
      3. Arity, number of operands on which the operator operates: unary, binary, trinary
      4. fixity, the position relative to its operands
-	1. Infix: $length * $width
+	1. Infix: =$length * $width=
 	2. Prefix and postfix: =++$x and $x++=
-	3. Circumfix: qw[one two three four]
-	4. Postcircumfix: $hash{$x} *=> {} come after $hash and suround $x*
+	3. Circumfix: =qw[one two three four]=
+	4. Postcircumfix: =$hash{$x}= where ={}= come after =$hash= and surround =$x=
 ** Operators
 #+ATTR_BEAMER: :overlay <+->
    - Operator types
      1. Numeric Operators: +, -, *, /, **, %, +=, --, etc
      2. String Operators:  =~, !~, eq, ne, gt, lt, ge, le, cmp
      3. Logical Operators: &&, and, ||, or, //, etc
-     4. Bitwise Operators: >>, <<, &, |, ^
+     4. Bitwise Operators: =>>=, =<<=, =&=, =|=, =^=
      5. Repetition operator: x
      6. Range operator: 1 .. 10, but in boolean context it's the flip flop operator
 ** Functions
@@ -753,7 +773,6 @@ outer scope
 #+end_src
 
 ** Function Parameters
-#+ATTR_BEAMER: :overlay <+->
     - Every function has a containing namespace
     - A function can be contained in another namespace anywhere in the code
     - Lexical subs are available starting on v5.18 =perldoc perlsub=
@@ -887,6 +906,7 @@ sub gen_fib {
    - =\b= boundary between a word character =\w= and a non-word character =\W=
 
 ** Assertions
+#+ATTR_BEAMER: :overlay <+->
    - Assertions are zero-width and don't consume characters from the match
    - (?=)  Positive look-ahead assertion
    - (?!)  Negative look-ahead assertion
@@ -1553,3 +1573,6 @@ END         { print "3rd END:   done running"    }
 *** JAPH / Obfuscated Perl Contest  
     =https://en.wikipedia.org/wiki/Obfuscated_Perl_Contest=
 **** The dromedary
+* =__END__=
+** =__END__=
+   ==__END__==
