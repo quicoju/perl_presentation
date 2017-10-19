@@ -1,0 +1,16 @@
+BEGIN TRANSACTION;
+CREATE TABLE game (
+       id    INTEGER PRIMARY KEY AUTOINCREMENT,
+       date  INTEGER
+);
+CREATE TABLE score (
+       id      INTEGER PRIMARY KEY AUTOINCREMENT,
+       game    INTEGER,
+       player  INTEGER,
+       value   INTEGER
+);
+CREATE TABLE player (
+       id    INTEGER PRIMARY KEY AUTOINCREMENT,
+       name  TEXT UNIQUE
+);
+COMMIT;
